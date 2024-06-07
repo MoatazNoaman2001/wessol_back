@@ -20,9 +20,16 @@ spring:
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 
+project:
+  location: location/
+base:
+  url: "localhost:8080/"
 springdoc:
   default-produces-media-type: application/json
+applications:
+  security:
+    secret-key: q1js4cSWr1cLqlbPS8mRR4v6xhs1ed4CiBHb71A87EO/zbI=
 server:
   port: 5487
-#  servlet:
-#    context-path: /api/v1/
+  servlet:
+    context-path: /v1/api/

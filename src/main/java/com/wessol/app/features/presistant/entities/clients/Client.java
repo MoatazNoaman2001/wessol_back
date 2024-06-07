@@ -5,6 +5,7 @@ import com.wessol.app.features.presistant.entities.Role;
 import com.wessol.app.features.presistant.models.Pair;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,8 +13,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Entity
+@Builder
 @Table(name = "clientTable")
-public class Clients {
+public class Client {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     String id;
@@ -31,7 +33,7 @@ public class Clients {
 
     @Embedded
     @Column(name = "location", nullable = false)
-    private Pair<String , String> location;
+    private Pair<Double , Double> location;
 
     @Column(name = "image", nullable = false)
     private String imgName;

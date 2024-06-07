@@ -1,11 +1,13 @@
 package com.wessol.app.features.presistant.entities.representative;
 
 import com.wessol.app.features.presistant.entities.Role;
-import com.wessol.app.features.presistant.entities.opt.OTP;
 import com.wessol.app.features.presistant.entities.plan.Plan;
+import com.wessol.app.features.presistant.entities.products.Product;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -18,6 +20,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Builder
 @Entity
 @Table(name="representativeTable")
 public class Representative implements UserDetails {
@@ -29,19 +32,29 @@ public class Representative implements UserDetails {
     @NotBlank(message = "Name Should be provided")
     private String name;
 
-    @Column(name = "PhoneNumber", nullable = false, length = 16)
+    @Column(name = "PhoneNumber", nullable = false, length = 16, unique = true)
     private String phoneNumber;
 
-    @OneToMany(mappedBy = "representative")
-    private List<OTP> otps;
+    @Column(name = "_otp", nullable = true)
+    private String otp;
+//    @OneToMany(mappedBy = "representative", fetch = FetchType.EAGER)
+//    @Nullable
+//    private List<OTP> otps = new ArrayList<>();
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     @Column(name = "authority")
     private Role role;
 
     @ManyToOne
     @JoinColumn(name = "plan_id")
+    @Nullable
     private Plan monthAttendancePay;
+
+    @Column(name = "img")
+    private String imageName;
+
+    @OneToMany(mappedBy = "representative")
+    private List<Product> products;
 //
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -50,12 +63,12 @@ public class Representative implements UserDetails {
 
     @Override
     public String getPassword() {
-        return otps.getLast().getOTP();
+        return otp;
     }
 
     @Override
     public String getUsername() {
-        return NationalId;
+        return phoneNumber;
     }
 
     @Override

@@ -1,6 +1,9 @@
 package com.wessol.app.core.Config;
 
+import com.wessol.app.features.domain.services.AdminService;
+import com.wessol.app.features.domain.services.AdminServiceImpl;
 import com.wessol.app.features.presistant.repo.RepresentativeRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.context.annotation.Bean;
@@ -20,6 +23,7 @@ public class ApplicationConfig {
 
     private final RepresentativeRepository repo;
     @Bean
+    @Transactional
     public UserDetailsService userDetailsService(){
         return username -> repo.findByPhoneNumber(username).orElseThrow(()->new UsernameNotFoundException("User not found"));
     }
@@ -39,7 +43,14 @@ public class ApplicationConfig {
     }
 
     @Bean
+    public AuthenticationManager getAuthManger(AuthenticationConfiguration config)throws Exception{
+        return config.getAuthenticationManager();
+    }
+
+    @Bean
     public PasswordEncoder getPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+
 }

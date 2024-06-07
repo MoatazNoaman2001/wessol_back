@@ -1,10 +1,13 @@
 package com.wessol.app.features.presistant.repo;
 
 import com.wessol.app.features.presistant.entities.opt.OTP;
+import com.wessol.app.features.presistant.entities.representative.Representative;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 import java.util.Optional;
 
-public interface OtpRepo extends JpaRepository<OTP, String> {
-    Optional<OTP> findByOTP(String otp);
+@RepositoryRestResource
+public interface OtpRepo extends JpaRepository<OTP, Long> {
+    Optional<OTP> findByRepresentative(Representative representative);
 }

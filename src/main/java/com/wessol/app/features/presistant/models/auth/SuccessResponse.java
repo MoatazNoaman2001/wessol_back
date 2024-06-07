@@ -6,9 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
 @Builder
 @NoArgsConstructor
-@AllArgsConstructor
-public class RegisterUser {
-    String otp, name, nationalId, phoneNumber;
+public class SuccessResponse {
+    String msg;
 }
