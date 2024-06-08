@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface RepresentativeService {
-    ResponseEntity<SuccessResponse> updateMyPlan(PlanRequest planRequest, String phoneNumber);
+    ResponseEntity<SuccessResponse> updateMyPlan(String planName, String phoneNumber);
 
     ResponseEntity<SuccessResponse> updateMyImg(MultipartFile file, String phoneNumber);
 

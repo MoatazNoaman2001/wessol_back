@@ -1,6 +1,7 @@
 package com.wessol.app.features.presistant.entities.representative;
 
 import com.wessol.app.features.presistant.entities.Role;
+import com.wessol.app.features.presistant.entities.opt.OTP;
 import com.wessol.app.features.presistant.entities.plan.Plan;
 import com.wessol.app.features.presistant.entities.products.Product;
 import jakarta.annotation.Nullable;
@@ -14,6 +15,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.security.Principal;
 import java.util.Collection;
 import java.util.List;
 
@@ -23,7 +25,7 @@ import java.util.List;
 @Builder
 @Entity
 @Table(name="representativeTable")
-public class Representative implements UserDetails {
+public class Representative implements UserDetails , Principal {
 
     @Id
     private String NationalId;
@@ -35,11 +37,9 @@ public class Representative implements UserDetails {
     @Column(name = "PhoneNumber", nullable = false, length = 16, unique = true)
     private String phoneNumber;
 
-    @Column(name = "_otp", nullable = true)
-    private String otp;
-//    @OneToMany(mappedBy = "representative", fetch = FetchType.EAGER)
-//    @Nullable
-//    private List<OTP> otps = new ArrayList<>();
+//    @Column(name = "_otp", nullable = true)
+    @OneToMany(mappedBy = "representative")
+    private List<OTP> otps;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "authority")
@@ -63,7 +63,7 @@ public class Representative implements UserDetails {
 
     @Override
     public String getPassword() {
-        return otp;
+        return otps.isEmpty()? "" : otps.getLast().getOTP();
     }
 
     @Override

@@ -9,5 +9,5 @@ import java.util.Optional;
 
 @RepositoryRestResource
 public interface OtpRepo extends JpaRepository<OTP, Long> {
-    Optional<OTP> findByRepresentative(Representative representative);
+    Optional<OTP> findByOTP(Representative OTP);
 }

@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,8 +25,6 @@ public class AdminServiceImpl implements AdminService {
     private final PlanRepository repository;
     private final CompanyRepository cr;
     private final ClientRepository clr;
-
-
 
     @Override
     public ResponseEntity<SuccessResponse> addPlan(PlanRequest addPlanRequest) {

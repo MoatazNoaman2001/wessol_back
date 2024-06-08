@@ -10,6 +10,7 @@ import com.wessol.app.features.presistant.repo.OtpRepo;
 import com.wessol.app.features.presistant.repo.RepresentativeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ import java.security.SecureRandom;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
 import java.util.Objects;
 import java.util.Random;
 
@@ -34,7 +36,9 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder encoder;
     private final OtpRepo otpRepo;
     private final JWT_Services jwt;
-    private final AuthenticationManager authenticationManager;
+
+    private final AuthenticationManager authManger;
+
     private String otp = "";
 
     @Override
@@ -62,7 +66,7 @@ public class AuthServiceImpl implements AuthService {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             if (response.statusCode() == 200) {
                 OTP otp = OTP.builder()
-                        .OTP(this.otp)
+                        .OTP(encoder.encode(this.otp))
                         .representative(representative)
                         .createdAt(LocalDateTime.now())
                         .expiresAt(LocalDateTime.now().plusDays(30))
@@ -98,44 +102,34 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public RequestResponse verifyPhoneNumber(VerifyOTPModel model) {
-        Representative representative= repo.findByPhoneNumber(model.getPhoneNumber())
-                .orElseThrow(() -> new UsernameNotFoundException("Cant found wanted user"));
-        OTP repOtp = otpRepo.findByRepresentative(representative)
-                .orElseThrow(() -> new UsernameNotFoundException("No OTP Attached"));
+        var auth = authManger.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        model.getPhoneNumber(),
+                        model.getOtp()
+                )
+        );
+        var claims = new HashMap<String, Object>();
+        var user = ((Representative) auth.getPrincipal());
+        claims.put("national number" , user.getNationalId());
+        var token = jwt.generateToken(claims , user);
 
-//        System.out.println("otp is encoded: " +repOtp.getOTP()+ "\nreceived otp: " + encoder.encode(model.getOtp()));
-        System.out.println(model.getOtp()+ " " +repOtp.getOTP());
-        System.out.println("verify model" + model.toString());
-        if (Objects.equals(model.getOtp(), repOtp.getOTP())) {
-            representative.setOtp(model.getOtp());
-            repOtp.setValidateAt(LocalDateTime.now());
-
-            repo.save(representative);
-            otpRepo.save(repOtp);
-
-            String token = jwt.generateToken(representative);
-            return RequestResponse.builder().token(token).build();
-        }else{
-            throw new RuntimeException("Wrong otp provided ");
-        }
+        return RequestResponse.builder().token(token).build();
     }
 
     @Override
     public RequestResponse loginUSer(LoginModel loginModel) {
-        Representative representative= repo.findByPhoneNumber(loginModel.getPhoneNumber())
-                .orElseThrow(() -> new UsernameNotFoundException("Cant found wanted user"));
-        OTP repOtp = otpRepo.findByRepresentative(representative)
-                .orElseThrow(() -> new UsernameNotFoundException("No OTP Attached"));
+        var auth = authManger.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        loginModel.getPhoneNumber(),
+                        loginModel.getOtp()
+                )
+        );
+        var claims = new HashMap<String, Object>();
+        var user = ((Representative) auth.getPrincipal());
+        claims.put("national number" , user.getNationalId());
+        var token = jwt.generateToken(claims , user);
 
-        System.out.println("otp is encoded: " + repOtp.getOTP());
-        System.out.println("verify model" + loginModel.toString());
-        if (Objects.equals(encoder.encode(loginModel.getOtp()), repOtp.getOTP())) {
-
-            String token = jwt.generateToken(representative);
-            return RequestResponse.builder().token(token).build();
-        }else{
-            throw new RuntimeException("Wrong otp provided ");
-        }
+        return RequestResponse.builder().token(token).build();
     }
 
 }

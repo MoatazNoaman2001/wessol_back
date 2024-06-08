@@ -54,22 +54,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 );
 
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-            } else if (
-                    services.isTokenValid(jwtToken, userDetails)
-                            && userDetails.getOtp() != null
-            ) {
-                otpRepo.findByRepresentative(userDetails).ifPresent(otp -> {
-                    if (otp.getCreatedAt() != null) {
-                        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                                userDetails, null, userDetails.getAuthorities()
-                        );
-                        authenticationToken.setDetails(
-                                new WebAuthenticationDetailsSource().buildDetails(request)
-                        );
+            } else if (services.isTokenValid(jwtToken, userDetails)) {
+                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                        userDetails, null, userDetails.getAuthorities()
+                );
+                authenticationToken.setDetails(
+                        new WebAuthenticationDetailsSource().buildDetails(request)
+                );
 
-                        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-                    }
-                });
+                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             }
         }
 

@@ -38,25 +38,19 @@ public class RepresentativeServiceImpl implements RepresentativeService {
     @Value("${base.url}")
     String url;
     @Override
-    public ResponseEntity<SuccessResponse> updateMyPlan(PlanRequest planRequest, String phoneNumber) {
-        Plan plan = Plan.builder()
-                .title(planRequest.getTitle())
-                .AttendancePay(planRequest.getPrice())
-                .prons(planRequest.getProns())
-                .build();
-        boolean isUserExist = repRepo.findByPhoneNumber(phoneNumber).isPresent();
-        if (isUserExist){
-            Representative rep = repRepo.findByPhoneNumber(phoneNumber).get();
-            if (rep.getMonthAttendancePay()!= null){
-                planRepository.delete(rep.getMonthAttendancePay());
-            }
-            planRepository.save(plan);
-            rep.setMonthAttendancePay(plan);
-            repRepo.save(rep);
+    public ResponseEntity<SuccessResponse> updateMyPlan(String planName, String phoneNumber) {
+        var planOp = planRepository.findByTitle(planName);
+        if (planOp.isPresent()){
+            var repOp = repRepo.findByPhoneNumber(phoneNumber);
+            if(repOp.isPresent()){
+                var rep = repOp.get();
+                rep.setMonthAttendancePay(planOp.get());
+                repRepo.save(rep);
 
-            return ResponseEntity.ok(SuccessResponse.builder().msg("plan updated").build());
+                return ResponseEntity.ok(SuccessResponse.builder().msg("plan updated").build());
+            }
         }
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     @Override

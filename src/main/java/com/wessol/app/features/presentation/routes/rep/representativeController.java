@@ -21,8 +21,8 @@ public class representativeController {
     private final RepresentativeService representativeService;
 
     @PostMapping("/updateMyPlan")
-    public ResponseEntity<SuccessResponse> updateMyPlan(@RequestBody PlanRequest planRequest,@RequestPart("phone") String phoneNumber){
-        return representativeService.updateMyPlan(planRequest, phoneNumber);
+    public ResponseEntity<SuccessResponse> updateMyPlan(@RequestPart("plan_title") String title,@RequestPart("phone") String phoneNumber){
+        return representativeService.updateMyPlan(title, phoneNumber);
     }
 
     @GetMapping("/getMyProducts")

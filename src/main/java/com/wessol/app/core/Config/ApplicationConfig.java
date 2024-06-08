@@ -43,11 +43,6 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public AuthenticationManager getAuthManger(AuthenticationConfiguration config)throws Exception{
-        return config.getAuthenticationManager();
-    }
-
-    @Bean
     public PasswordEncoder getPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
