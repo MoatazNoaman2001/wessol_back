@@ -105,4 +105,5 @@ public class AdminServiceImpl implements AdminService {
 
         return ResponseEntity.ok(ServicesState.builder().clients(clients).companies(companies).build());
     }
+
 }

@@ -21,4 +21,5 @@ public interface AdminService {
     ResponseEntity<SuccessResponse> addNewCompany(CompanyDto companyDto);
 
     ResponseEntity<ServicesState> getServiceState();
+
 }

@@ -1,10 +1,13 @@
 package com.wessol.app.features.presentation.routes.admin;
 
 import com.wessol.app.features.domain.services.AdminService;
+import com.wessol.app.features.domain.services.AuthService;
+import com.wessol.app.features.presistant.models.auth.SendOTPModel;
 import com.wessol.app.features.presistant.models.company.CompanyDto;
 import com.wessol.app.features.presistant.entities.company.Company;
 import com.wessol.app.features.presistant.models.admin.PlanRequest;
 import com.wessol.app.features.presistant.models.auth.SuccessResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +20,8 @@ import java.util.List;
 public class AdminController {
 
     private final AdminService adminService;
+    private final AuthService authService;
+
 
     @PostMapping("/add-plan")
     public ResponseEntity<SuccessResponse> addPlan(@RequestBody PlanRequest planRequest){
@@ -42,4 +47,5 @@ public class AdminController {
     public ResponseEntity<SuccessResponse> addCompany(@RequestBody CompanyDto companyDto){
         return adminService.addNewCompany(companyDto);
     }
+
 }
