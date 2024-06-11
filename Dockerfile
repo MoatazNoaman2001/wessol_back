@@ -1,5 +1,5 @@
 FROM ubuntu:latest AS build
-RUN apt-get openjdk-21-jdk -y
+RUN apt-get install openjdk-21-jdk -y
 RUN apt-get update
 COPY . .
 RUN ./mvnw package
