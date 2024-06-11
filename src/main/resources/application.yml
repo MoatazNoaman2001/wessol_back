@@ -7,7 +7,7 @@ spring:
   application:
     name: wessol_backend
   datasource:
-    url: postgres://moataz_noaman:Tk9sMkgjbF1l8jD8jU1EU4G0xmTEOZ3f@dpg-cpk7heect0pc73b3t460-a.oregon-postgres.render.com/wessol_database
+    url: jdbc:postgresql://dpg-cpk7heect0pc73b3t460-a.oregon-postgres.render.com:5432/wessol_database
     username: moataz_noaman
     password: Tk9sMkgjbF1l8jD8jU1EU4G0xmTEOZ3f
     driver-class-name: org.postgresql.Driver
