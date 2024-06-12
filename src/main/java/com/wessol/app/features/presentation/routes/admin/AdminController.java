@@ -30,12 +30,12 @@ public class AdminController {
 
     @PostMapping("/update-plan")
     public ResponseEntity<SuccessResponse> updatePlan(@RequestBody PlanRequest planRequest){
-        return adminService.addPlan(planRequest);
+        return adminService.UpdatePlan(planRequest);
     }
 
     @PostMapping("/delete-plan")
-    public ResponseEntity<SuccessResponse> deletePlan(@RequestBody PlanRequest planRequest){
-        return adminService.addPlan(planRequest);
+    public ResponseEntity<SuccessResponse> deletePlan(@RequestPart String title){
+        return adminService.DeletePlan(title);
     }
 
     @GetMapping("/companies")

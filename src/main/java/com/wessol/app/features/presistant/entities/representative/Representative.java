@@ -63,7 +63,7 @@ public class Representative implements UserDetails , Principal {
 
     @Override
     public String getPassword() {
-        return otps.isEmpty()? "" : otps.getLast().getOTP();
+        return otps.isEmpty()? "rjo34iu52iojrktwn89254thb" : otps.getLast().getOTP();
     }
 
     @Override

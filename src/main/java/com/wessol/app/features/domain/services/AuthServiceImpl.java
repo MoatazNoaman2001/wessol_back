@@ -43,11 +43,12 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public SuccessResponse sendOTP(SendOTPModel model) {
+        System.out.println(model);
         Representative representative = Representative.builder()
                 .name(model.getName())
                 .NationalId(model.getNationalId())
                 .phoneNumber(model.getPhoneNumber())
-                .role(Role.Representative)
+                .role(model.getIsAdmin().equalsIgnoreCase("true") ? Role.Admin: Role.Representative)
                 .build();
 
         LetsBotModel letsBotModel = getLetsBootModel(representative);

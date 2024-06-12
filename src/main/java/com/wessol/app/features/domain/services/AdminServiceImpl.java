@@ -10,10 +10,8 @@ import com.wessol.app.features.presistant.repo.ClientRepository;
 import com.wessol.app.features.presistant.repo.CompanyRepository;
 import com.wessol.app.features.presistant.repo.PlanRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,10 +26,11 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public ResponseEntity<SuccessResponse> addPlan(PlanRequest addPlanRequest) {
+        System.out.println(addPlanRequest);
         Plan plan = Plan.builder()
                 .title(addPlanRequest.getTitle())
                 .AttendancePay(addPlanRequest.getPrice())
-                .prons(addPlanRequest.getProns())
+                .prons(addPlanRequest.getPros())
                 .build();
         boolean isExist  = repository.findByTitle(plan.getTitle()).isPresent();
         if (isExist){
@@ -50,7 +49,7 @@ public class AdminServiceImpl implements AdminService {
         Plan plan = Plan.builder()
                 .title(addPlanRequest.getTitle())
                 .AttendancePay(addPlanRequest.getPrice())
-                .prons(addPlanRequest.getProns())
+                .prons(addPlanRequest.getPros())
                 .build();
         boolean isExist  = repository.findByTitle(plan.getTitle()).isPresent();
         if (isExist){

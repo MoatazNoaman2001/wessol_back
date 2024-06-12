@@ -20,8 +20,8 @@ public class AuthorizationUI {
     AuthServiceImpl authService;
 
     @PostMapping("/sendOTP")
-    ResponseEntity<SuccessResponse> sendOTP(@RequestBody SendOTPModel sendOTPModel){
-        return ResponseEntity.status(CREATED).body(authService.sendOTP(sendOTPModel));
+    ResponseEntity<SuccessResponse> sendOTP(@RequestBody SendOTPModel model){
+        return ResponseEntity.status(CREATED).body(authService.sendOTP(model));
     }
 
     @PostMapping("/verify")
@@ -37,5 +37,6 @@ public class AuthorizationUI {
     ResponseEntity<RequestResponse> login(@RequestBody LoginModel loginModel){
         return ResponseEntity.ok(authService.loginUSer(loginModel));
     }
+
 
 }

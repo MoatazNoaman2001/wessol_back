@@ -1,6 +1,7 @@
 package com.wessol.app.features.presistant.models.admin;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,5 +21,6 @@ public class PlanRequest {
     @NotBlank(message = "Must add price")
     private Double price;
     @NotBlank(message = "Must add some benefits")
-    private List<String> prons;
+    @NotNull
+    private List<String> pros;
 }

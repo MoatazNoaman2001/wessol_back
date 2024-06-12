@@ -2,13 +2,11 @@ package com.wessol.app;
 
 import com.wessol.app.features.presistant.entities.Role;
 import com.wessol.app.features.presistant.entities.company.Company;
+import com.wessol.app.features.presistant.entities.opt.OTP;
 import com.wessol.app.features.presistant.entities.payments.Method;
 import com.wessol.app.features.presistant.entities.plan.Plan;
 import com.wessol.app.features.presistant.entities.representative.Representative;
-import com.wessol.app.features.presistant.repo.CompanyRepository;
-import com.wessol.app.features.presistant.repo.MethodRepository;
-import com.wessol.app.features.presistant.repo.PlanRepository;
-import com.wessol.app.features.presistant.repo.RepresentativeRepository;
+import com.wessol.app.features.presistant.repo.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -16,7 +14,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.domain.Example;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @SpringBootApplication
@@ -30,7 +30,12 @@ public class AppApplication {
 
 
     @Bean
-    public CommandLineRunner runner(CompanyRepository cr, RepresentativeRepository rr, PlanRepository pr, MethodRepository mr) {
+    public CommandLineRunner runner(CompanyRepository cr,
+                                    RepresentativeRepository rr,
+                                    PlanRepository pr,
+                                    MethodRepository mr ,
+                                    PasswordEncoder pe,
+                                    OtpRepo or) {
         return args -> {
             if (cr.findAll().isEmpty()) {
                 cr.saveAll(
@@ -74,11 +79,19 @@ public class AppApplication {
             }
 
             if (rr.findAll().isEmpty()) {
-                rr.save(Representative.builder()
+                var rep = Representative.builder()
                         .role(Role.Admin)
-                        .phoneNumber("8897456321")
-                        .NationalId("7789656265655741")
-                        .name("Eng.Moataz").build());
+                        .phoneNumber("201098518194")
+                        .NationalId("30107222502032")
+                        .name("Eng.Moataz").build();
+                rr.save(rep);
+                or.save(
+                        OTP.builder()
+                                .OTP(pe.encode("889745"))
+                                .expiresAt(LocalDateTime.now().plusDays(30))
+                                .representative(rep)
+                        .build()
+                );
             }
         };
     }
