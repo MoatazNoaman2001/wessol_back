@@ -11,7 +11,6 @@ import com.wessol.app.features.presistant.repo.RepresentativeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -25,8 +24,6 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
-import java.util.Objects;
-import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -105,7 +102,7 @@ public class AuthServiceImpl implements AuthService {
     public RequestResponse verifyPhoneNumber(VerifyOTPModel model) {
         var auth = authManger.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        model.getPhoneNumber(),
+                        model.getPhone(),
                         model.getOtp()
                 )
         );
@@ -113,6 +110,10 @@ public class AuthServiceImpl implements AuthService {
         var user = ((Representative) auth.getPrincipal());
         claims.put("national number" , user.getNationalId());
         var token = jwt.generateToken(claims , user);
+
+        var otp = otpRepo.findByRepresentative(user).get().getLast();
+        otp.setValidateAt(LocalDateTime.now());
+        otpRepo.save(otp);
 
         return RequestResponse.builder().token(token).build();
     }

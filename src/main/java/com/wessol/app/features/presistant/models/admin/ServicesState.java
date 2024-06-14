@@ -1,6 +1,6 @@
 package com.wessol.app.features.presistant.models.admin;
 
-import com.wessol.app.features.presistant.entities.clients.Client;
+import com.wessol.app.features.presistant.entities.clients.Submission;
 import com.wessol.app.features.presistant.entities.company.Company;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,6 +16,6 @@ import java.util.List;
 public class ServicesState {
 
     List<Company> companies;
-    List<Client> clients;
+    List<Submission> clients;
 
 }

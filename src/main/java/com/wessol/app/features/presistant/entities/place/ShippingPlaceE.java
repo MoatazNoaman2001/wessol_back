@@ -1,6 +1,7 @@
 package com.wessol.app.features.presistant.entities.place;
 
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.wessol.app.features.presistant.entities.products.Product;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -26,6 +27,7 @@ public class ShippingPlaceE {
     private String place;
 
     @OneToMany(mappedBy = "shippingPlace")
+    @JsonManagedReference
     private List<Product> products;
 
 }

@@ -4,6 +4,7 @@ import com.wessol.app.features.presistant.entities.Role;
 import com.wessol.app.features.presistant.entities.company.Company;
 import com.wessol.app.features.presistant.entities.opt.OTP;
 import com.wessol.app.features.presistant.entities.payments.Method;
+import com.wessol.app.features.presistant.entities.place.ShippingPlaceE;
 import com.wessol.app.features.presistant.entities.plan.Plan;
 import com.wessol.app.features.presistant.entities.representative.Representative;
 import com.wessol.app.features.presistant.repo.*;
@@ -35,7 +36,8 @@ public class AppApplication {
                                     PlanRepository pr,
                                     MethodRepository mr ,
                                     PasswordEncoder pe,
-                                    OtpRepo or) {
+                                    OtpRepo or,
+                                    ShippingPlaceRepository sr) {
         return args -> {
             if (cr.findAll().isEmpty()) {
                 cr.saveAll(
@@ -76,6 +78,14 @@ public class AppApplication {
                 mr.save(Method.builder().method("AmericanExpress").build());
                 mr.save(Method.builder().method("Paypal").build());
                 mr.save(Method.builder().method("Diners").build());
+            }
+
+            if(sr.findAll().isEmpty()){
+                sr.saveAll(List.of(
+                        ShippingPlaceE.builder().place("Back").build(),
+                        ShippingPlaceE.builder().place("Front").build()
+//                        ShippingPlaceE.builder().place("Front").build()
+                ));
             }
 
             if (rr.findAll().isEmpty()) {

@@ -1,5 +1,9 @@
 package com.wessol.app.features.presistant.entities.representative;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.wessol.app.features.presistant.entities.Role;
 import com.wessol.app.features.presistant.entities.opt.OTP;
 import com.wessol.app.features.presistant.entities.plan.Plan;
@@ -25,6 +29,7 @@ import java.util.List;
 @Builder
 @Entity
 @Table(name="representativeTable")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "nationalId")
 public class Representative implements UserDetails , Principal {
 
     @Id
@@ -39,6 +44,7 @@ public class Representative implements UserDetails , Principal {
 
 //    @Column(name = "_otp", nullable = true)
     @OneToMany(mappedBy = "representative")
+    @JsonBackReference
     private List<OTP> otps;
 
     @Enumerated(EnumType.STRING)
@@ -62,6 +68,7 @@ public class Representative implements UserDetails , Principal {
     }
 
     @Override
+    @JsonIgnore
     public String getPassword() {
         return otps.isEmpty()? "rjo34iu52iojrktwn89254thb" : otps.getLast().getOTP();
     }

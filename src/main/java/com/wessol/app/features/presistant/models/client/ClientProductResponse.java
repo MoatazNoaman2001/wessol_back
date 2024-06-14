@@ -12,9 +12,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ClientProductResponse {
-    private  String f_name, l_name, phone, message;
-    private Pair<Double, Double> loc;
 
+    private Pair<Double, Double> loc;
     private Boolean isCanceled;
     private Boolean postponed;
     private String cause;

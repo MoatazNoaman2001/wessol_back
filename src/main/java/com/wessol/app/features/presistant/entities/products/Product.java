@@ -1,6 +1,10 @@
 package com.wessol.app.features.presistant.entities.products;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.wessol.app.features.presistant.entities.clients.Submission;
 import com.wessol.app.features.presistant.entities.company.Company;
 import com.wessol.app.features.presistant.entities.payments.Method;
 import com.wessol.app.features.presistant.entities.place.ShippingPlaceE;
@@ -22,6 +26,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "product")
 @EntityListeners(AuditingEntityListener.class)
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Product {
 
     @Id
@@ -33,10 +38,6 @@ public class Product {
 
     @Column(nullable = false, name = "rec_phone")
     private String receiverPhoneNumber;
-
-    @ManyToOne
-    @JoinColumn(name = "rep_id")
-    private Representative representative;
 
     @ManyToOne()
     @JoinColumn(name = "pay_id")
@@ -54,7 +55,12 @@ public class Product {
 
     @ManyToOne
     @JoinColumn(name = "place_id")
+    @JsonBackReference
     private ShippingPlaceE shippingPlace;
+
+    @OneToOne
+    @JoinColumn(name = "sub_id")
+    private Submission sub;
 
     @CreatedDate
     @Column(name = "createdAt", updatable = false)
@@ -69,5 +75,10 @@ public class Product {
     @Enumerated
     @Column(name = "name")
     private ProductState productState;
+
+
+    @ManyToOne
+    @JoinColumn(name = "rep_id")
+    private Representative representative;
 
 }

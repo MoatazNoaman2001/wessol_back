@@ -1,12 +1,14 @@
 package com.wessol.app.features.presistant.entities.opt;
 
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.wessol.app.features.presistant.entities.representative.Representative;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import net.minidev.json.annotate.JsonIgnore;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -41,5 +43,6 @@ public class OTP {
 
     @ManyToOne
     @JoinColumn(name = "_rep_id", nullable = false)
+    @JsonManagedReference
     private Representative representative;
 }

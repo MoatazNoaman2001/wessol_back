@@ -1,11 +1,14 @@
 package com.wessol.app.features.domain.services;
 
-import com.wessol.app.features.presistant.entities.clients.Client;
+import com.wessol.app.features.presistant.entities.clients.Feedback;
+import com.wessol.app.features.presistant.entities.clients.Submission;
 import com.wessol.app.features.presistant.entities.products.Product;
 import com.wessol.app.features.presistant.entities.products.ProductState;
 import com.wessol.app.features.presistant.models.auth.SuccessResponse;
 import com.wessol.app.features.presistant.models.client.ClientProductResponse;
-import com.wessol.app.features.presistant.repo.ClientRepository;
+import com.wessol.app.features.presistant.models.contact.ContactUsModel;
+import com.wessol.app.features.presistant.repo.FeedBackRepository;
+import com.wessol.app.features.presistant.repo.SubmissionRepository;
 import com.wessol.app.features.presistant.repo.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,8 +25,9 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class ClientServiceImpl implements ClientService {
     private final ProductRepository pr;
-    private final ClientRepository cr;
+    private final SubmissionRepository sr;
     private final FileServices fileServices;
+    private final FeedBackRepository fr;
 
     @Value("${project.location}")
     String path;
@@ -44,16 +48,31 @@ public class ClientServiceImpl implements ClientService {
             pr.save(prd);
             return ResponseEntity.ok(SuccessResponse.builder().msg("postponed safely").build());
         }
-        Client client = Client.builder()
-                .firstName(response.getF_name()).lastName(response.getL_name())
-                .phoneNumber(response.getPhone()).Message(response.getMessage())
-                .location(response.getLoc()).build();
+        Submission sub = Submission.builder()
+                .location(response.getLoc())
+                .isPostponed(response.getPostponed())
+                .cause(response.getCause())
+                .build();
         String name = fileServices.uploadFile(path, file);
-        client.setImgName(name);
-        cr.save(client);
+        sub.setImgName(name);
+        sub.setProduct(prd);
+
+        sr.save(sub);
 
         prd.setVerifiedDate(LocalDateTime.now());
         pr.save(prd);
         return ResponseEntity.ok(SuccessResponse.builder().msg("confirmed safely").build());
+    }
+
+    @Override
+    public ResponseEntity<SuccessResponse> contactUS(ContactUsModel model) {
+        Feedback feed = Feedback.builder().l_name(model.getL_name())
+                .f_name(model.getF_name())
+                .phone(model.getPhone())
+                .msg(model.getMsg())
+                .build();
+
+        fr.save(feed);
+        return ResponseEntity.ok(SuccessResponse.builder().msg("Feed Saved").build());
     }
 }

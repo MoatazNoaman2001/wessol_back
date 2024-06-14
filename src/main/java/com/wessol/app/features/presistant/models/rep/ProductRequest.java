@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductRequest {
-    private String company, rec_name, sen_name, rec_phone, pay_type, price, div_type, ship_place;
+    private String company, rec_name, sen_name, sen_phone, rec_phone, pay_type, price, div_type, ship_place;
 }

@@ -6,7 +6,7 @@ import com.wessol.app.features.presistant.entities.plan.Plan;
 import com.wessol.app.features.presistant.models.admin.PlanRequest;
 import com.wessol.app.features.presistant.models.admin.ServicesState;
 import com.wessol.app.features.presistant.models.auth.SuccessResponse;
-import com.wessol.app.features.presistant.repo.ClientRepository;
+import com.wessol.app.features.presistant.repo.SubmissionRepository;
 import com.wessol.app.features.presistant.repo.CompanyRepository;
 import com.wessol.app.features.presistant.repo.PlanRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ import java.util.List;
 public class AdminServiceImpl implements AdminService {
     private final PlanRepository repository;
     private final CompanyRepository cr;
-    private final ClientRepository clr;
+    private final SubmissionRepository clr;
 
     @Override
     public ResponseEntity<SuccessResponse> addPlan(PlanRequest addPlanRequest) {

@@ -30,9 +30,9 @@ public class representativeController {
         return representativeService.getUserProducts(phoneNumber);
     }
 
-    @GetMapping("/addProduct")
-    private ResponseEntity<SuccessResponse> addNewProduct(@RequestBody ProductRequest request, @RequestPart("phone") String phoneNumber){
-        return  representativeService.addProduct(request, phoneNumber);
+    @PostMapping("/addProduct")
+    private ResponseEntity<SuccessResponse> addNewProduct(@RequestBody ProductRequest request){
+        return  representativeService.addProduct(request);
     }
 
     @GetMapping("/profile")

@@ -2,10 +2,8 @@ package com.wessol.app.features.domain.services;
 
 import com.wessol.app.features.presistant.entities.payments.Method;
 import com.wessol.app.features.presistant.entities.place.ShippingPlaceE;
-import com.wessol.app.features.presistant.entities.plan.Plan;
 import com.wessol.app.features.presistant.entities.products.*;
 import com.wessol.app.features.presistant.entities.representative.Representative;
-import com.wessol.app.features.presistant.models.admin.PlanRequest;
 import com.wessol.app.features.presistant.models.auth.SuccessResponse;
 import com.wessol.app.features.presistant.models.rep.ProductRequest;
 import com.wessol.app.features.presistant.repo.*;
@@ -19,7 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -85,8 +82,8 @@ public class RepresentativeServiceImpl implements RepresentativeService {
     }
 
     @Override
-    public ResponseEntity<SuccessResponse> addProduct(ProductRequest request, String phoneNumber) {
-        Representative rep = repRepo.findByPhoneNumber(phoneNumber).orElseThrow(() -> new RuntimeException("cant find representative"));
+    public ResponseEntity<SuccessResponse> addProduct(ProductRequest request) {
+        Representative rep = repRepo.findByPhoneNumber(request.getSen_phone()).orElseThrow(() -> new RuntimeException("cant find representative"));
         var company = cr.findByName(request.getCompany());
         if (company.isEmpty()){
             return ResponseEntity.notFound().build();

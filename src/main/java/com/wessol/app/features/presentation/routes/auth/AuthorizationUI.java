@@ -29,6 +29,7 @@ public class AuthorizationUI {
         try{
             return ResponseEntity.ok(authService.verifyPhoneNumber(verifyOTPModel));
         }catch (RuntimeException e){
+            System.out.println(e);
             return ResponseEntity.badRequest().build();
         }
     }
