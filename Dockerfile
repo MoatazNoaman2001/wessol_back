@@ -11,7 +11,7 @@ RUN apt-get update && \
     apt-get clean && \
     update-ca-certificates -f;
 
-# Setup JAVA_HOME -- useful for docker commandline
+# Setup JAVA_HOME -- useful for docker commandlin
 ENV JAVA_HOME /usr/lib/jvm/java-21-openjdk-amd64/
 RUN export JAVA_HOME
 RUN apt-get update
