@@ -16,6 +16,9 @@ ENV JAVA_HOME /usr/lib/jvm/java-21-openjdk-amd64/
 RUN export JAVA_HOME
 RUN apt-get update
 COPY . .
+
+# Make the mvnw script executable
+RUN chmod +x ./mvnw
 RUN ./mvnw clean package
 
 FROM openjdk:21-jdk
