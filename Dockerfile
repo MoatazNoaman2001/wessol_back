@@ -18,7 +18,8 @@ RUN apt-get update
 COPY . .
 
 # Make the mvnw script executable
-RUN chmod +x ./mvnw
+RUN chmod +x mvnw
+RUN chmod +x mvnw.cmd
 RUN ./mvnw clean package
 
 FROM openjdk:21-jdk
