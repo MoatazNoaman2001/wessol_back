@@ -31,6 +31,10 @@ base:
   url: "localhost:8080/"
 springdoc:
   default-produces-media-type: application/json
+  swagger-ui:
+    path: /swagger-ui.html
+    api-docs:
+      path: /api-docs
 applications:
   security:
     secret-key: q1js4cSWr1cLqlbPS8mRR4v6xhs1ed4CiBHb71A87EO/zbI=

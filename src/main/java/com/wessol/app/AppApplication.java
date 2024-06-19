@@ -8,6 +8,7 @@ import com.wessol.app.features.presistant.entities.place.ShippingPlaceE;
 import com.wessol.app.features.presistant.entities.plan.Plan;
 import com.wessol.app.features.presistant.entities.representative.Representative;
 import com.wessol.app.features.presistant.repo.*;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -23,6 +24,7 @@ import java.util.List;
 @SpringBootApplication
 @ComponentScan("com.wessol.app")
 @EnableJpaAuditing
+//@OpenAPIDefinition
 public class AppApplication {
 
     public static void main(String[] args) {
