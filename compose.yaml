@@ -1,9 +1,9 @@
 services:
   postgres:
-    container_name: 'wessol_db'
+    container_name: 'wessol-db'
     image: 'postgres:latest'
     environment:
-      - 'POSTGRES_DB=wessol'
+      - 'POSTGRES_DB=wessol_db'
       - 'POSTGRES_PASSWORD=QTJKLas4321'
       - 'POSTGRES_USER=postgres'
     volumes:

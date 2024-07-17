@@ -24,6 +24,6 @@ RUN ./mvnw clean package
 
 FROM openjdk:21-jdk
 VOLUME /tmp
-EXPOSE 8080
+EXPOSE 3000
 COPY --from=build /target/app-0.0.2.jar app.jar
 ENTRYPOINT ["java","-jar","/app.jar"]

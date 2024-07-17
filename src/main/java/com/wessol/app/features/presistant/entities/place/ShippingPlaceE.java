@@ -27,7 +27,6 @@ public class ShippingPlaceE {
     private String place;
 
     @OneToMany(mappedBy = "shippingPlace")
-    @JsonManagedReference
     private List<Product> products;
 
 }

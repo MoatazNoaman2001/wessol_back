@@ -18,3 +18,4 @@ public class ClientProductResponse {
     private Boolean postponed;
     private String cause;
 }
+/*{loc: {78562 , 54789}, isCanceled: false, postponed: false, cause: null}*/

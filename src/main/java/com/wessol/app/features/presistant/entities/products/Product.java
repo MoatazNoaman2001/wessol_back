@@ -55,7 +55,6 @@ public class Product {
 
     @ManyToOne
     @JoinColumn(name = "place_id")
-    @JsonBackReference
     private ShippingPlaceE shippingPlace;
 
     @OneToOne
