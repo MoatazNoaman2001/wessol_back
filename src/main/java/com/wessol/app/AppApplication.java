@@ -21,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.time.LocalDateTime;
 import java.util.List;
 
+
 @SpringBootApplication
 @ComponentScan("com.wessol.app")
 @EnableJpaAuditing

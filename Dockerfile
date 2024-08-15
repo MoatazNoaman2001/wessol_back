@@ -1,29 +1,14 @@
-FROM ubuntu:latest AS build
-# Install OpenJDK-8
-RUN apt-get update && \
-    apt-get install -y openjdk-21-jdk && \
-    apt-get install -y ant && \
-    apt-get clean;
+# Use the official OpenJDK 21 runtime as a parent image
+FROM openjdk:21-jdk-slim
 
-# Fix certificate issues
-RUN apt-get update && \
-    apt-get install ca-certificates-java && \
-    apt-get clean && \
-    update-ca-certificates -f;
+# Set the working directory in the container
+WORKDIR /app
 
-# Setup JAVA_HOME -- useful for docker commandlin
-ENV JAVA_HOME /usr/lib/jvm/java-21-openjdk-amd64/
-RUN export JAVA_HOME
-RUN apt-get update
-COPY . .
+# Copy the jar file from the host to the container
+COPY target/app-0.0.2.jar /app/wessol_backend.jar
 
-# Make the mvnw script executable
-RUN chmod +x mvnw
-RUN chmod +x mvnw.cmd
-RUN ./mvnw clean package
-
-FROM openjdk:21-jdk
-VOLUME /tmp
+# Expose the application port
 EXPOSE 3000
-COPY --from=build /target/app-0.0.2.jar app.jar
-ENTRYPOINT ["java","-jar","/app.jar"]
+
+# Run the jar file
+ENTRYPOINT ["java", "-jar", "/app/wessol_backend.jar"]

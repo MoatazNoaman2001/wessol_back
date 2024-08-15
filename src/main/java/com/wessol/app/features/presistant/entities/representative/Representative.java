@@ -8,6 +8,7 @@ import com.wessol.app.features.presistant.entities.Role;
 import com.wessol.app.features.presistant.entities.opt.OTP;
 import com.wessol.app.features.presistant.entities.plan.Plan;
 import com.wessol.app.features.presistant.entities.products.Product;
+import com.wessol.app.features.presistant.models.Pair;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -41,6 +42,9 @@ public class Representative implements UserDetails , Principal {
 
     @Column(name = "PhoneNumber", nullable = false, length = 16, unique = true)
     private String phoneNumber;
+
+    @Embedded
+    private Pair<Double, Double> location;
 
 //    @Column(name = "_otp", nullable = true)
     @OneToMany(mappedBy = "representative")
