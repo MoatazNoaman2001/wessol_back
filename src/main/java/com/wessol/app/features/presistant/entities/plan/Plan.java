@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.Duration;
 import java.util.List;
 
 
@@ -32,6 +33,8 @@ public class Plan {
     @ElementCollection
     @Column(name = "benefits")
     private List<String> prons;
+
+    private Integer duration;
 
     @OneToMany(mappedBy = "monthAttendancePay")
     private List<Representative> representatives;

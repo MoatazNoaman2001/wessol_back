@@ -3,6 +3,7 @@ package com.wessol.app.features.presentation.routes.rep;
 import com.wessol.app.features.domain.services.RepresentativeService;
 import com.wessol.app.features.presistant.entities.payments.Method;
 import com.wessol.app.features.presistant.entities.place.ShippingPlaceE;
+import com.wessol.app.features.presistant.entities.plan.Plan;
 import com.wessol.app.features.presistant.entities.products.Product;
 import com.wessol.app.features.presistant.entities.representative.Representative;
 import com.wessol.app.features.presistant.models.admin.PlanRequest;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/rep")
@@ -23,6 +25,12 @@ public class representativeController {
     @PostMapping("/updateMyPlan")
     public ResponseEntity<SuccessResponse> updateMyPlan(@RequestPart("plan_title") String title,@RequestPart("phone") String phoneNumber){
         return representativeService.updateMyPlan(title, phoneNumber);
+    }
+
+
+    @GetMapping("/getMyPlan")
+    public ResponseEntity<Map> getMyPlan(@RequestPart("phone") String phoneNumber){
+        return representativeService.getMyPlan(phoneNumber);
     }
 
     @GetMapping("/getMyProducts")

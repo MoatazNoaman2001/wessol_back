@@ -70,7 +70,7 @@ public class AuthServiceImpl implements AuthService {
                         .expiresAt(LocalDateTime.now().plusDays(30))
                         .build();
                 otpRepo.save(otp);
-                return SuccessResponse.builder().msg("Account created Please Verify").build();
+                return SuccessResponse.builder().msg("Account created Please Verify {" + this.otp+ "}").build();
             }
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);

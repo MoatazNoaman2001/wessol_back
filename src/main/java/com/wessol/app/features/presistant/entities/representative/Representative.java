@@ -21,6 +21,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -59,6 +60,9 @@ public class Representative implements UserDetails , Principal {
     @JoinColumn(name = "plan_id")
     @Nullable
     private Plan monthAttendancePay;
+
+    @Column(nullable = true, name = "_plan_start_date")
+    private LocalDateTime mothAttendancePayStartDate;
 
     @Column(name = "img")
     private String imageName;

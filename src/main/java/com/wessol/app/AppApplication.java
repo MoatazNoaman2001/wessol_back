@@ -18,7 +18,9 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 
@@ -61,17 +63,17 @@ public class AppApplication {
                                         "تحديد مواعيد التسليم المرنة حسب احتياجاتك.",
                                         "تتبع الشحنات بالوقت الحقيقي.",
                                         " دعم العملاء على مدار الساعة.")
-                                ).build(),
+                                ).duration(1).build(),
                         Plan.builder().title("الخطة النصف سنوية").AttendancePay(35.0).prons(
                                 List.of("جميع ميزات الخطة الشهرية",
                                         "خصم يصل إلى 10٪ عند الدفع مقدماً لنصف السنة",
                                         "توفير المزيد من الاستقرار والثبات في الخدمة")
-                        ).build(),
+                        ).duration(6).build(),
                         Plan.builder().title("الخطة السنوية").AttendancePay(60.0).prons(
                                 List.of("جميع ميزات الخطط الشهرية والنصف سنوية",
                                         "خصم يصل إلى 20٪ عند الدفع مقدماً للسنة كاملة",
                                         "ضمان استمرارية الخدمة على مدار السنة دون انقطاع")
-                        ).build()
+                        ).duration(12).build()
                 ));
             }
 

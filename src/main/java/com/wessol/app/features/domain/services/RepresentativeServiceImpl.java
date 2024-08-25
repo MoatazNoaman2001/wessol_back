@@ -2,6 +2,7 @@ package com.wessol.app.features.domain.services;
 
 import com.wessol.app.features.presistant.entities.payments.Method;
 import com.wessol.app.features.presistant.entities.place.ShippingPlaceE;
+import com.wessol.app.features.presistant.entities.plan.Plan;
 import com.wessol.app.features.presistant.entities.products.*;
 import com.wessol.app.features.presistant.entities.representative.Representative;
 import com.wessol.app.features.presistant.models.auth.SuccessResponse;
@@ -16,7 +17,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -34,16 +38,18 @@ public class RepresentativeServiceImpl implements RepresentativeService {
 
     @Value("${base.url}")
     String url;
+
     @Override
     public ResponseEntity<SuccessResponse> updateMyPlan(String planName, String phoneNumber) {
         var planOp = planRepository.findByTitle(planName);
-        if (planOp.isPresent()){
+        if (planOp.isPresent()) {
             var repOp = repRepo.findByPhoneNumber(phoneNumber);
-            if(repOp.isPresent()){
+            if (repOp.isPresent()) {
                 var rep = repOp.get();
                 rep.setMonthAttendancePay(planOp.get());
-                repRepo.save(rep);
+                rep.setMothAttendancePayStartDate(LocalDateTime.now());
 
+                repRepo.save(rep);
                 return ResponseEntity.ok(SuccessResponse.builder().msg("plan updated").build());
             }
         }
@@ -51,11 +57,24 @@ public class RepresentativeServiceImpl implements RepresentativeService {
     }
 
     @Override
+    public ResponseEntity<Map> getMyPlan(String phoneNumber) {
+        var rep = repRepo.findByPhoneNumber(phoneNumber);
+        if (rep.isPresent()) {
+            var plan = rep.get().getMonthAttendancePay();
+            if (plan != null) {
+                return ResponseEntity.status(HttpStatus.OK).body(Map.of("getMonthAttendancePay", rep.get().getMonthAttendancePay(), "getMothAttendancePayStartDat", rep.get().getMothAttendancePayStartDate()));
+            }
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+
+    }
+
+    @Override
     public ResponseEntity<SuccessResponse> updateMyImg(MultipartFile file, String phoneNumber) {
         boolean isUserExist = repRepo.findByPhoneNumber(phoneNumber).isPresent();
-        if (isUserExist){
+        if (isUserExist) {
             Representative rep = repRepo.findByPhoneNumber(phoneNumber).get();
-            if (rep.getMonthAttendancePay()!= null){
+            if (rep.getMonthAttendancePay() != null) {
                 planRepository.delete(rep.getMonthAttendancePay());
             }
             String fileName = "";
@@ -74,7 +93,7 @@ public class RepresentativeServiceImpl implements RepresentativeService {
     @Override
     public ResponseEntity<List<Product>> getUserProducts(String phone) {
         boolean isUserExist = repRepo.findByPhoneNumber(phone).isPresent();
-        if (isUserExist){
+        if (isUserExist) {
             Representative rep = repRepo.findByPhoneNumber(phone).get();
             return ResponseEntity.ok(rep.getProducts());
         }
@@ -85,7 +104,7 @@ public class RepresentativeServiceImpl implements RepresentativeService {
     public ResponseEntity<SuccessResponse> addProduct(ProductRequest request) {
         Representative rep = repRepo.findByPhoneNumber(request.getSen_phone()).orElseThrow(() -> new RuntimeException("cant find representative"));
         var company = cr.findByName(request.getCompany());
-        if (company.isEmpty()){
+        if (company.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
         var method = mr.findByMethod(request.getPay_type());
@@ -107,7 +126,7 @@ public class RepresentativeServiceImpl implements RepresentativeService {
                     .build();
 
             pr.save(prd);
-        }else{
+        } else {
             ResponseEntity.status(HttpStatus.NO_CONTENT).body(SuccessResponse.builder().msg("method or place not found").build());
         }
         return ResponseEntity.ok(SuccessResponse.builder()
@@ -129,6 +148,6 @@ public class RepresentativeServiceImpl implements RepresentativeService {
     @Override
     public ResponseEntity<List<ShippingPlaceE>> getShippingPlaces() {
         var places = sr.findAll();
-        return  ResponseEntity.ok(places);
+        return ResponseEntity.ok(places);
     }
 }
