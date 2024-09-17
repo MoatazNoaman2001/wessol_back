@@ -50,6 +50,9 @@ public class Product {
     @Column(name = "Cost", nullable = false)
     private long Cost;
 
+    @Column(name = "rep_earn" , nullable = false)
+    private float representativeEarnings = 0.1f;
+
     @Enumerated
     private DriveType driveType;
 

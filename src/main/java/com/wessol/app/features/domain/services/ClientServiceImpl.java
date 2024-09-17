@@ -19,6 +19,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Calendar;
+import java.util.TimeZone;
 
 @Service
 @Configuration
@@ -59,7 +61,9 @@ public class ClientServiceImpl implements ClientService {
 
         sr.save(sub);
 
-        prd.setVerifiedDate(LocalDateTime.now());
+        prd.setVerifiedDate(
+                LocalDateTime.ofInstant(Calendar.getInstance().toInstant(), TimeZone.getDefault().toZoneId())
+        );
         pr.save(prd);
         return ResponseEntity.ok(SuccessResponse.builder().msg("confirmed safely").build());
     }

@@ -23,7 +23,9 @@ import java.security.SecureRandom;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.TimeZone;
 
 @Service
 @RequiredArgsConstructor
@@ -66,8 +68,12 @@ public class AuthServiceImpl implements AuthService {
                 OTP otp = OTP.builder()
                         .OTP(encoder.encode(this.otp))
                         .representative(representative)
-                        .createdAt(LocalDateTime.now())
-                        .expiresAt(LocalDateTime.now().plusDays(30))
+                        .createdAt(
+                                LocalDateTime.ofInstant(Calendar.getInstance().toInstant(), TimeZone.getDefault().toZoneId())
+                        )
+                        .expiresAt(
+                                LocalDateTime.ofInstant(Calendar.getInstance().toInstant(), TimeZone.getDefault().toZoneId()).plusDays(30)
+                        )
                         .build();
                 otpRepo.save(otp);
                 return SuccessResponse.builder().msg("Account created Please Verify {" + this.otp+ "}").build();
@@ -112,7 +118,9 @@ public class AuthServiceImpl implements AuthService {
         var token = jwt.generateToken(claims , user);
 
         var otp = otpRepo.findByRepresentative(user).get().getLast();
-        otp.setValidateAt(LocalDateTime.now());
+        otp.setValidateAt(
+                LocalDateTime.ofInstant(Calendar.getInstance().toInstant(), TimeZone.getDefault().toZoneId())
+        );
         otpRepo.save(otp);
 
         return RequestResponse.builder().token(token).build();

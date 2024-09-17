@@ -1,14 +1,14 @@
 package com.wessol.app.features.domain.services;
 
+import com.wessol.app.features.presistant.entities.products.Product;
+import com.wessol.app.features.presistant.entities.representative.Representative;
 import com.wessol.app.features.presistant.models.company.CompanyDto;
 import com.wessol.app.features.presistant.entities.company.Company;
 import com.wessol.app.features.presistant.entities.plan.Plan;
 import com.wessol.app.features.presistant.models.admin.PlanRequest;
 import com.wessol.app.features.presistant.models.admin.ServicesState;
 import com.wessol.app.features.presistant.models.auth.SuccessResponse;
-import com.wessol.app.features.presistant.repo.SubmissionRepository;
-import com.wessol.app.features.presistant.repo.CompanyRepository;
-import com.wessol.app.features.presistant.repo.PlanRepository;
+import com.wessol.app.features.presistant.repo.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +23,14 @@ public class AdminServiceImpl implements AdminService {
     private final PlanRepository repository;
     private final CompanyRepository cr;
     private final SubmissionRepository clr;
+    private final RepresentativeRepository rp;
+    private final ProductRepository pr;
+
+    @Override
+    public ResponseEntity<List<Representative>> getAllReps() {
+        var reps = rp.findAll();
+        return ResponseEntity.ok(reps);
+    }
 
     @Override
     public ResponseEntity<SuccessResponse> addPlan(PlanRequest addPlanRequest) {
@@ -103,6 +111,11 @@ public class AdminServiceImpl implements AdminService {
         var clients = clr.findAll();
 
         return ResponseEntity.ok(ServicesState.builder().clients(clients).companies(companies).build());
+    }
+
+    @Override
+    public ResponseEntity<List<Product>> getAllProducts() {
+        return ResponseEntity.ok(pr.findAll());
     }
 
 }

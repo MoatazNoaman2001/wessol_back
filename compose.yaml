@@ -26,6 +26,14 @@ services:
       - DB_PASSWORD=$DB_PASSWORD
       - DB_NAME=$DB_NAME
       - DB_PORT=$DB_PORT
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pg-admin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: Moataz.noaman12@Gmail.com
+      PGADMIN_DEFAULT_PASSWORD: $DB_PASSWORD
+    ports:
+      - "5050:80"
 networks:
   spring-db:
     driver: 'bridge'

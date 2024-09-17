@@ -18,9 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -47,7 +45,9 @@ public class RepresentativeServiceImpl implements RepresentativeService {
             if (repOp.isPresent()) {
                 var rep = repOp.get();
                 rep.setMonthAttendancePay(planOp.get());
-                rep.setMothAttendancePayStartDate(LocalDateTime.now());
+                rep.setMothAttendancePayStartDate(
+                        LocalDateTime.ofInstant(Calendar.getInstance().toInstant(), TimeZone.getDefault().toZoneId())
+                );
 
                 repRepo.save(rep);
                 return ResponseEntity.ok(SuccessResponse.builder().msg("plan updated").build());
@@ -59,13 +59,14 @@ public class RepresentativeServiceImpl implements RepresentativeService {
     @Override
     public ResponseEntity<Map> getMyPlan(String phoneNumber) {
         var rep = repRepo.findByPhoneNumber(phoneNumber);
+        Plan plan = null;
         if (rep.isPresent()) {
-            var plan = rep.get().getMonthAttendancePay();
+            plan = rep.get().getMonthAttendancePay();
             if (plan != null) {
                 return ResponseEntity.status(HttpStatus.OK).body(Map.of("getMonthAttendancePay", rep.get().getMonthAttendancePay(), "getMothAttendancePayStartDat", rep.get().getMothAttendancePayStartDate()));
             }
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error" , rep.isEmpty() ? "cant find representative" : "dont have any plan" ));
 
     }
 
@@ -109,6 +110,8 @@ public class RepresentativeServiceImpl implements RepresentativeService {
         }
         var method = mr.findByMethod(request.getPay_type());
         var place = sr.findByPlace(request.getShip_place());
+        if(rep.getMonthAttendancePay() != null)
+           return ResponseEntity.status(HttpStatus.NOT_FOUND).body(SuccessResponse.builder().msg("rep has no plan").build());
 
         if (method.isPresent() && place.isPresent()) {
             Product prd = Product.builder()
@@ -121,7 +124,7 @@ public class RepresentativeServiceImpl implements RepresentativeService {
                     .driveType(request.getDiv_type().equals(DriveType.CatchProduct.name()) ? DriveType.CatchProduct :
                             DriveType.InHand)
                     .shippingPlace(place.get())
-                    .dateCreated(LocalDateTime.now())
+                    .dateCreated(LocalDateTime.ofInstant(Calendar.getInstance().toInstant(), TimeZone.getDefault().toZoneId()))
                     .productState(ProductState.Pending)
                     .build();
 

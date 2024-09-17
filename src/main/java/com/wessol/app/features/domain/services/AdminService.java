@@ -1,5 +1,7 @@
 package com.wessol.app.features.domain.services;
 
+import com.wessol.app.features.presistant.entities.products.Product;
+import com.wessol.app.features.presistant.entities.representative.Representative;
 import com.wessol.app.features.presistant.models.company.CompanyDto;
 import com.wessol.app.features.presistant.entities.company.Company;
 import com.wessol.app.features.presistant.entities.plan.Plan;
@@ -11,15 +13,13 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 public interface AdminService {
+    ResponseEntity<List<Representative>> getAllReps();
     ResponseEntity<SuccessResponse> addPlan(PlanRequest addPlanRequest);
     ResponseEntity<SuccessResponse> UpdatePlan(PlanRequest addPlanRequest);
     ResponseEntity<SuccessResponse> DeletePlan(String title);
-
     ResponseEntity<List<Plan>> getAllAvailablePlans();
-
     ResponseEntity<List<Company>> getAllCompanies();
     ResponseEntity<SuccessResponse> addNewCompany(CompanyDto companyDto);
-
     ResponseEntity<ServicesState> getServiceState();
-
+    ResponseEntity<List<Product>> getAllProducts();
 }

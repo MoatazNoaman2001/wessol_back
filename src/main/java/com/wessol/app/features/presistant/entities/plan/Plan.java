@@ -1,5 +1,8 @@
 package com.wessol.app.features.presistant.entities.plan;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.wessol.app.features.presistant.entities.representative.Representative;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -17,6 +20,7 @@ import java.util.List;
 @NoArgsConstructor
 @Table(name = "Plan")
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Plan {
 
 
@@ -37,5 +41,6 @@ public class Plan {
     private Integer duration;
 
     @OneToMany(mappedBy = "monthAttendancePay")
+    @JsonManagedReference
     private List<Representative> representatives;
 }

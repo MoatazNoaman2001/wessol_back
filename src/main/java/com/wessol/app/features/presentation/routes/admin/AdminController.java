@@ -2,6 +2,8 @@ package com.wessol.app.features.presentation.routes.admin;
 
 import com.wessol.app.features.domain.services.AdminService;
 import com.wessol.app.features.domain.services.AuthService;
+import com.wessol.app.features.presistant.entities.products.Product;
+import com.wessol.app.features.presistant.entities.representative.Representative;
 import com.wessol.app.features.presistant.models.auth.SendOTPModel;
 import com.wessol.app.features.presistant.models.company.CompanyDto;
 import com.wessol.app.features.presistant.entities.company.Company;
@@ -22,6 +24,10 @@ public class AdminController {
     private final AdminService adminService;
     private final AuthService authService;
 
+    @GetMapping("/reps")
+    public  ResponseEntity<List<Representative>> getAllReps(){
+        return  adminService.getAllReps();
+    }
 
     @PostMapping("/add-plan")
     public ResponseEntity<SuccessResponse> addPlan(@RequestBody PlanRequest planRequest){
@@ -46,6 +52,11 @@ public class AdminController {
     @PostMapping("/add-company")
     public ResponseEntity<SuccessResponse> addCompany(@RequestBody CompanyDto companyDto){
         return adminService.addNewCompany(companyDto);
+    }
+
+    @GetMapping("/prods")
+    public ResponseEntity<List<Product>> getAllProducts(){
+        return adminService.getAllProducts();
     }
 
 }

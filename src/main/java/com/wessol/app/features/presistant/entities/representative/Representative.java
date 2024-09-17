@@ -8,6 +8,7 @@ import com.wessol.app.features.presistant.entities.Role;
 import com.wessol.app.features.presistant.entities.opt.OTP;
 import com.wessol.app.features.presistant.entities.plan.Plan;
 import com.wessol.app.features.presistant.entities.products.Product;
+import com.wessol.app.features.presistant.entities.wallet.Wallet;
 import com.wessol.app.features.presistant.models.Pair;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
@@ -60,6 +61,10 @@ public class Representative implements UserDetails , Principal {
     @JoinColumn(name = "plan_id")
     @Nullable
     private Plan monthAttendancePay;
+
+    @OneToOne
+    @JoinColumn(name = "wal_id")
+    private Wallet wallet;
 
     @Column(nullable = true, name = "_plan_start_date")
     private LocalDateTime mothAttendancePayStartDate;
