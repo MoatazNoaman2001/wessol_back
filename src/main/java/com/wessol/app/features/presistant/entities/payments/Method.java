@@ -29,6 +29,10 @@ public class Method {
     @Column(unique = true, name = "name")
     private String method;
 
+    @Column(name = "img_name")
+    private String imageName;
+
+
     @OneToMany(mappedBy = "payType")
     @JsonManagedReference
     private List<Product> products;

@@ -40,5 +40,5 @@ applications:
     secret-key: q1js4cSWr1cLqlbPS8mRR4v6xhs1ed4CiBHb71A87EO/zbI=
 server:
   port: 3000
-#  servlet:
-#    context-path: /v1/api/
+  servlet:
+    context-path: /

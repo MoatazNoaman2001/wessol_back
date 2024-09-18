@@ -2,8 +2,11 @@ package com.wessol.app.features.presentation.routes.admin;
 
 import com.wessol.app.features.domain.services.AdminService;
 import com.wessol.app.features.domain.services.AuthService;
+import com.wessol.app.features.presistant.entities.payments.Method;
+import com.wessol.app.features.presistant.entities.place.ShippingPlaceE;
 import com.wessol.app.features.presistant.entities.products.Product;
 import com.wessol.app.features.presistant.entities.representative.Representative;
+import com.wessol.app.features.presistant.models.admin.AddMethod;
 import com.wessol.app.features.presistant.models.auth.SendOTPModel;
 import com.wessol.app.features.presistant.models.company.CompanyDto;
 import com.wessol.app.features.presistant.entities.company.Company;
@@ -13,8 +16,11 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/admin")
@@ -57,6 +63,44 @@ public class AdminController {
     @GetMapping("/prods")
     public ResponseEntity<List<Product>> getAllProducts(){
         return adminService.getAllProducts();
+    }
+
+    @PostMapping("/add-method")
+    public ResponseEntity<SuccessResponse> addMethod(@RequestPart MultipartFile image,@RequestBody AddMethod addMethod) throws IOException {
+        return adminService.addNewMethod(addMethod, image);
+    }
+
+    @PutMapping("/update-method")
+    public ResponseEntity<SuccessResponse> updateMethod(@RequestPart String oldName, @RequestPart String newName, @RequestPart MultipartFile image) throws IOException {
+        return adminService.updateMethod(oldName, newName, image);
+    }
+    @DeleteMapping("/delete-method")
+    public ResponseEntity<SuccessResponse> deleteMethod(@RequestPart Long id){
+        return adminService.deleteMethod(id);
+    }
+
+    @GetMapping("/get-all-methods")
+    public ResponseEntity<List<Method>> getAllMethods(){
+        return adminService.getAllMethods();
+    }
+
+    @PostMapping("/add-place")
+    public ResponseEntity<SuccessResponse> addPlace(@RequestPart String name) throws IOException {
+        return adminService.addNewShippingPlace(name);
+    }
+
+    @PutMapping("/update-place")
+    public ResponseEntity<SuccessResponse> updatePlace(@RequestPart String oldName, @RequestPart String newName) throws IOException {
+        return adminService.updateShippingPlace(oldName, newName);
+    }
+    @DeleteMapping("/delete-place")
+    public ResponseEntity<SuccessResponse> deletePlace(@RequestPart Long id){
+        return adminService.deleteShippingPlace(id);
+    }
+
+    @GetMapping("/get-all-places")
+    public ResponseEntity<List<ShippingPlaceE>> getAllPlaces(){
+        return adminService.getAllShippingPlaces();
     }
 
 }

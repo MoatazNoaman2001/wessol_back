@@ -123,7 +123,9 @@ public class AuthServiceImpl implements AuthService {
         );
         otpRepo.save(otp);
 
-        return RequestResponse.builder().token(token).build();
+        return RequestResponse.builder().token(token).isAdmin(
+                user.getRole() == Role.Admin
+        ).build();
     }
 
     @Override
@@ -139,7 +141,9 @@ public class AuthServiceImpl implements AuthService {
         claims.put("national number" , user.getNationalId());
         var token = jwt.generateToken(claims , user);
 
-        return RequestResponse.builder().token(token).build();
+        return RequestResponse.builder().token(token).isAdmin(
+                user.getRole() == Role.Admin
+        ).build();
     }
 
 }

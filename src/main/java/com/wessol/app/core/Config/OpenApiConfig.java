@@ -11,8 +11,11 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.servers.Server;
 import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.List;
 
 @OpenAPIDefinition(
         info = @io.swagger.v3.oas.annotations.info.Info(
@@ -30,12 +33,12 @@ import org.springframework.context.annotation.Configuration;
 
         ),
 
-        servers = {
-                @Server(
-                        description = "Local ENV",
-                        url = "http://localhost:8080/v1/api"
-                )
-        },
+//        servers = {
+//                @Server(
+//                        description = "Local ENV",
+//                        url = "http://localhost:3000/v1/api"
+//                )
+//        },
         security = {
                 @SecurityRequirement(
                         name = "bearerAuth"
@@ -54,6 +57,9 @@ import org.springframework.context.annotation.Configuration;
 public class OpenApiConfig {
 //    @Bean
 //    public OpenAPI baseOpenApi(){
-//        return new OpenAPI().info(new Info().title("Spring Doc").version("1.0.0").description("Spring doc"));
+//        return new OpenAPI()
+//                .info(new Info().title("Spring Doc").version("1.0.0").description("Spring doc")
+//                        .license(new io.swagger.v3.oas.models.info.License().name("Wessol Backend licence"))
+//                        .contact(new io.swagger.v3.oas.models.info.Contact().name("@moataz_noaman").email("Moataz.Noaman12@gmail.com")));
 //    }
 }
