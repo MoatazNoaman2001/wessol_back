@@ -2,6 +2,7 @@ package com.wessol.app.features.presentation.routes.admin;
 
 import com.wessol.app.features.domain.services.AdminService;
 import com.wessol.app.features.domain.services.AuthService;
+import com.wessol.app.features.presistant.entities.Role;
 import com.wessol.app.features.presistant.entities.payments.Method;
 import com.wessol.app.features.presistant.entities.place.ShippingPlaceE;
 import com.wessol.app.features.presistant.entities.products.Product;
@@ -15,10 +16,14 @@ import com.wessol.app.features.presistant.models.auth.SuccessResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -51,8 +56,11 @@ public class AdminController {
     }
 
     @GetMapping("/companies")
-    public ResponseEntity<List<Company>> getAllCompanies(){
-        return adminService.getAllCompanies();
+    public ResponseEntity<List<Company>> getAllCompanies(Authentication authentication){
+        var rep = (Representative ) authentication.getPrincipal();
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+        boolean isAdmin = authorities.stream().anyMatch(role -> role.getAuthority().equals(Role.Admin.name()));
+        return adminService.getAllCompanies(isAdmin? Role.Admin.name() : Role.User.name(), rep.getNationalId());
     }
 
     @PostMapping("/add-company")
@@ -80,8 +88,11 @@ public class AdminController {
     }
 
     @GetMapping("/get-all-methods")
-    public ResponseEntity<List<Method>> getAllMethods(){
-        return adminService.getAllMethods();
+    public ResponseEntity<List<Method>> getAllMethods(Authentication authentication){
+        var rep = (Representative ) authentication.getPrincipal();
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+        boolean isAdmin = authorities.stream().anyMatch(role -> role.getAuthority().equals(Role.Admin.name()));
+        return adminService.getAllMethods(isAdmin? Role.Admin.name() : Role.User.name(), rep.getNationalId());
     }
 
     @PostMapping("/add-place")

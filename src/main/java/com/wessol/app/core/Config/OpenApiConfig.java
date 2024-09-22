@@ -33,12 +33,12 @@ import java.util.List;
 
         ),
 
-//        servers = {
-//                @Server(
-//                        description = "Local ENV",
-//                        url = "http://localhost:3000/v1/api"
-//                )
-//        },
+        servers = {
+                @Server(
+                        description = "Local ENV",
+                        url = "http://localhost:3000"
+                )
+        },
         security = {
                 @SecurityRequirement(
                         name = "bearerAuth"

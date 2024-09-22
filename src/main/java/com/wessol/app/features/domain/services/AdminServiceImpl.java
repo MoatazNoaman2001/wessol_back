@@ -1,5 +1,6 @@
 package com.wessol.app.features.domain.services;
 
+import com.wessol.app.features.presistant.entities.Role;
 import com.wessol.app.features.presistant.entities.payments.Method;
 import com.wessol.app.features.presistant.entities.place.ShippingPlaceE;
 import com.wessol.app.features.presistant.entities.products.Product;
@@ -20,7 +21,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 @Service
@@ -111,13 +114,15 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public ResponseEntity<List<Company>> getAllCompanies() {
-        return ResponseEntity.ok(cr.findAll());
+    public ResponseEntity<List<Company>> getAllCompanies(String role, String id) {
+        return ResponseEntity.ok(Objects.equals(role, Role.Admin.name()) ? cr.findAll() :
+                cr.findAll().stream().peek(company -> company.setProducts(new ArrayList<>())).toList());
     }
 
     @Override
-    public ResponseEntity<List<Method>> getAllMethods() {
-        var methods = mr.findAll();
+    public ResponseEntity<List<Method>> getAllMethods(String role , String id) {
+        var methods = Objects.equals(role, Role.Admin.name()) ? mr.findAll() :
+                mr.findAll().stream().peek(method -> method.setProducts(new ArrayList<>())).toList();
         return ResponseEntity.ok(
                 methods.stream().peek(method ->
                         method.setImageName(!method.getImageName().isEmpty()?url + "/" + method.getImageName(): "")

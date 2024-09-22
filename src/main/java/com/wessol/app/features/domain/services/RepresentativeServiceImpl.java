@@ -1,5 +1,6 @@
 package com.wessol.app.features.domain.services;
 
+import com.wessol.app.features.presistant.entities.Role;
 import com.wessol.app.features.presistant.entities.payments.Method;
 import com.wessol.app.features.presistant.entities.place.ShippingPlaceE;
 import com.wessol.app.features.presistant.entities.plan.Plan;
@@ -110,7 +111,7 @@ public class RepresentativeServiceImpl implements RepresentativeService {
         }
         var method = mr.findByMethod(request.getPay_type());
         var place = sr.findByPlace(request.getShip_place());
-        if(rep.getMonthAttendancePay() != null)
+        if(rep.getMonthAttendancePay() == null)
            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(SuccessResponse.builder().msg("rep has no plan").build());
 
         if (method.isPresent() && place.isPresent()) {
@@ -130,7 +131,7 @@ public class RepresentativeServiceImpl implements RepresentativeService {
 
             pr.save(prd);
         } else {
-            ResponseEntity.status(HttpStatus.NO_CONTENT).body(SuccessResponse.builder().msg("method or place not found").build());
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(SuccessResponse.builder().msg("method or place not found").build());
         }
         return ResponseEntity.ok(SuccessResponse.builder()
                 .msg("Product added Successfully").build());
@@ -143,14 +144,16 @@ public class RepresentativeServiceImpl implements RepresentativeService {
     }
 
     @Override
-    public ResponseEntity<List<Method>> getMethods() {
-        var methods = mr.findAll();
+    public ResponseEntity<List<Method>> getMethods(String role) {
+        var methods = role.equals(Role.Admin.name()) ? mr.findAll() : mr.findAll()
+                .stream().peek(method -> method.setProducts(new ArrayList<>())).toList();
         return ResponseEntity.ok(methods);
     }
 
     @Override
-    public ResponseEntity<List<ShippingPlaceE>> getShippingPlaces() {
-        var places = sr.findAll();
+    public ResponseEntity<List<ShippingPlaceE>> getShippingPlaces(String role) {
+        var places = role.equals(Role.Admin.name())? sr.findAll() :
+                sr.findAll().stream().peek(shippingPlaceE -> shippingPlaceE.setProducts(new ArrayList<>())).toList();
         return ResponseEntity.ok(places);
     }
 }

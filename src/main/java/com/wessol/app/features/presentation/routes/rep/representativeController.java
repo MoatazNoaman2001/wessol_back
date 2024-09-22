@@ -1,6 +1,7 @@
 package com.wessol.app.features.presentation.routes.rep;
 
 import com.wessol.app.features.domain.services.RepresentativeService;
+import com.wessol.app.features.presistant.entities.Role;
 import com.wessol.app.features.presistant.entities.payments.Method;
 import com.wessol.app.features.presistant.entities.place.ShippingPlaceE;
 import com.wessol.app.features.presistant.entities.plan.Plan;
@@ -11,8 +12,11 @@ import com.wessol.app.features.presistant.models.auth.SuccessResponse;
 import com.wessol.app.features.presistant.models.rep.ProductRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -34,12 +38,17 @@ public class representativeController {
     }
 
     @GetMapping("/getMyProducts")
-    public ResponseEntity<List<Product>> getMyProducts(@RequestPart("phone") String phoneNumber){
-        return representativeService.getUserProducts(phoneNumber);
+    public ResponseEntity<List<Product>> getMyProducts(Authentication authentication){
+        var rep = (Representative) authentication.getPrincipal();
+        return representativeService.getUserProducts(rep.getPhoneNumber());
     }
 
     @PostMapping("/addProduct")
-    private ResponseEntity<SuccessResponse> addNewProduct(@RequestBody ProductRequest request){
+    private ResponseEntity<SuccessResponse> addNewProduct(@RequestBody ProductRequest request, Authentication authentication){
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+        var rep = (Representative) authentication.getPrincipal();
+        request.setSen_phone(rep.getPhoneNumber());
+        request.setSen_name(rep.getName());
         return  representativeService.addProduct(request);
     }
 
@@ -49,12 +58,16 @@ public class representativeController {
     }
 
     @GetMapping("/payments")
-    private ResponseEntity<List<Method>> getMethods(){
-        return representativeService.getMethods();
+    private ResponseEntity<List<Method>> getMethods(Authentication authentication){
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+        boolean isAdmin = authorities.stream().anyMatch(role -> role.getAuthority().equals(Role.Admin.name()));
+        return representativeService.getMethods(isAdmin? Role.Admin.name() :  Role.User.name());
     }
     @GetMapping("/shipping-places")
-    private ResponseEntity<List<ShippingPlaceE>> getShippingMethods(){
-        return representativeService.getShippingPlaces();
+    private ResponseEntity<List<ShippingPlaceE>> getShippingMethods(Authentication authentication){
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+        boolean isAdmin = authorities.stream().anyMatch(role -> role.getAuthority().equals(Role.Admin.name()));
+        return representativeService.getShippingPlaces(isAdmin ? Role.Admin.name() : Role.User.name());
     }
 
 }

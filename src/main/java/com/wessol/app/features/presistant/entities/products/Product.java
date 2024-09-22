@@ -9,6 +9,7 @@ import com.wessol.app.features.presistant.entities.company.Company;
 import com.wessol.app.features.presistant.entities.payments.Method;
 import com.wessol.app.features.presistant.entities.place.ShippingPlaceE;
 import com.wessol.app.features.presistant.entities.representative.Representative;
+import com.wessol.app.features.presistant.models.Pair;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -23,9 +23,9 @@ public interface AdminService {
     ResponseEntity<SuccessResponse> UpdatePlan(PlanRequest addPlanRequest);
     ResponseEntity<SuccessResponse> DeletePlan(String title);
     ResponseEntity<List<Plan>> getAllAvailablePlans();
-    ResponseEntity<List<Company>> getAllCompanies();
+    ResponseEntity<List<Company>> getAllCompanies(String role, String id);
 
-    ResponseEntity<List<Method>> getAllMethods();
+    ResponseEntity<List<Method>> getAllMethods(String role, String id);
     ResponseEntity<SuccessResponse> addNewMethod(AddMethod addMethod, MultipartFile file) throws IOException;
     ResponseEntity<SuccessResponse> deleteMethod(Long id);
     ResponseEntity<SuccessResponse> updateMethod(String oldName, String newName, MultipartFile file) throws IOException;

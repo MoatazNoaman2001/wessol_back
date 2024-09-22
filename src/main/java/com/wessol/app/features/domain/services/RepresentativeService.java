@@ -25,8 +25,8 @@ public interface RepresentativeService {
 
     ResponseEntity<Representative> getProfile(String phoneNumber);
 
-    ResponseEntity<List<Method>> getMethods();
+    ResponseEntity<List<Method>> getMethods(String role);
 
-    ResponseEntity<List<ShippingPlaceE>> getShippingPlaces();
+    ResponseEntity<List<ShippingPlaceE>> getShippingPlaces(String role);
 
 }

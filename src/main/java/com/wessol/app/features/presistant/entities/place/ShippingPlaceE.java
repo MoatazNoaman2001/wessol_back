@@ -3,6 +3,7 @@ package com.wessol.app.features.presistant.entities.place;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.wessol.app.features.presistant.entities.products.Product;
+import com.wessol.app.features.presistant.models.Pair;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
