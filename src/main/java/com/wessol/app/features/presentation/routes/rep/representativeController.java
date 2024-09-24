@@ -9,6 +9,7 @@ import com.wessol.app.features.presistant.entities.products.Product;
 import com.wessol.app.features.presistant.entities.representative.Representative;
 import com.wessol.app.features.presistant.models.admin.PlanRequest;
 import com.wessol.app.features.presistant.models.auth.SuccessResponse;
+import com.wessol.app.features.presistant.models.product.GetProducts;
 import com.wessol.app.features.presistant.models.rep.ProductRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -38,9 +39,9 @@ public class representativeController {
     }
 
     @GetMapping("/getMyProducts")
-    public ResponseEntity<List<Product>> getMyProducts(Authentication authentication){
+    public ResponseEntity<GetProducts> getMyProducts(Authentication authentication){
         var rep = (Representative) authentication.getPrincipal();
-        return representativeService.getUserProducts(rep.getPhoneNumber());
+        return representativeService.getUserProducts(rep);
     }
 
     @PostMapping("/addProduct")

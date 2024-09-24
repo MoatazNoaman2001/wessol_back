@@ -2,10 +2,10 @@ package com.wessol.app.features.domain.services;
 
 import com.wessol.app.features.presistant.entities.payments.Method;
 import com.wessol.app.features.presistant.entities.place.ShippingPlaceE;
-import com.wessol.app.features.presistant.entities.plan.Plan;
 import com.wessol.app.features.presistant.entities.products.Product;
 import com.wessol.app.features.presistant.entities.representative.Representative;
 import com.wessol.app.features.presistant.models.auth.SuccessResponse;
+import com.wessol.app.features.presistant.models.product.GetProducts;
 import com.wessol.app.features.presistant.models.rep.ProductRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,7 +19,7 @@ public interface RepresentativeService {
 
     ResponseEntity<SuccessResponse> updateMyImg(MultipartFile file, String phoneNumber);
 
-    ResponseEntity<List<Product>> getUserProducts(String phone);
+    ResponseEntity<GetProducts> getUserProducts(Representative rep);
 
     ResponseEntity<SuccessResponse> addProduct(ProductRequest request);
 
