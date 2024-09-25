@@ -11,6 +11,7 @@ import com.wessol.app.features.presistant.models.admin.PlanRequest;
 import com.wessol.app.features.presistant.models.auth.SuccessResponse;
 import com.wessol.app.features.presistant.models.product.GetProducts;
 import com.wessol.app.features.presistant.models.rep.ProductRequest;
+import com.wessol.app.features.presistant.models.rep.WhatsappMsg;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -69,6 +70,12 @@ public class representativeController {
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         boolean isAdmin = authorities.stream().anyMatch(role -> role.getAuthority().equals(Role.Admin.name()));
         return representativeService.getShippingPlaces(isAdmin ? Role.Admin.name() : Role.User.name());
+    }
+
+    @PostMapping("/whatsapp-msg")
+    private ResponseEntity<SuccessResponse> sendWhatsAppMessage(Authentication authentication, @RequestBody WhatsappMsg msg){
+        var rep = ((Representative) authentication.getPrincipal());
+        return representativeService.sendWhatsappMessage(rep , msg);
     }
 
 }

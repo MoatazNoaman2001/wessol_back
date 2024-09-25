@@ -140,10 +140,12 @@ public class AuthServiceImpl implements AuthService {
         var user = ((Representative) auth.getPrincipal());
         claims.put("national number" , user.getNationalId());
         var token = jwt.generateToken(claims , user);
-
-        return RequestResponse.builder().token(token).isAdmin(
-                user.getRole() == Role.Admin
-        ).build();
+        var otp = otpRepo.findByRepresentative(user).get().getLast();
+        if(otp.getValidateAt() != null)
+            return RequestResponse.builder().token(token).isAdmin(
+                    user.getRole() == Role.Admin
+            ).build();
+        else return  RequestResponse.builder().token("not verified").build();
     }
 
 }

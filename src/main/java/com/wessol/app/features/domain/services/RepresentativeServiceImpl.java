@@ -1,14 +1,19 @@
 package com.wessol.app.features.domain.services;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.wessol.app.core.Config.Constants;
 import com.wessol.app.features.presistant.entities.Role;
 import com.wessol.app.features.presistant.entities.payments.Method;
 import com.wessol.app.features.presistant.entities.place.ShippingPlaceE;
 import com.wessol.app.features.presistant.entities.plan.Plan;
 import com.wessol.app.features.presistant.entities.products.*;
 import com.wessol.app.features.presistant.entities.representative.Representative;
+import com.wessol.app.features.presistant.models.auth.LetsBotModel;
 import com.wessol.app.features.presistant.models.auth.SuccessResponse;
 import com.wessol.app.features.presistant.models.product.GetProducts;
 import com.wessol.app.features.presistant.models.rep.ProductRequest;
+import com.wessol.app.features.presistant.models.rep.WhatsappMsg;
 import com.wessol.app.features.presistant.repo.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,7 +23,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 @Service
@@ -128,6 +138,29 @@ public class RepresentativeServiceImpl implements RepresentativeService {
                             .build();
                 }).toList()
         ).build())).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    }
+
+    @Override
+    public ResponseEntity<SuccessResponse> sendWhatsappMessage(Representative representative, WhatsappMsg msg) throws JsonProcessingException {
+
+        HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(30)).build();
+        LetsBotModel letsBotModel = generateGetLocationMessage(representative, msg);
+        String requestBody = new ObjectMapper().writeValueAsString(letsBotModel);
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("https://letsbot.net/api/v1/message/send"))
+                .timeout(Duration.of(30, ChronoUnit.SECONDS))
+                .header("Content-Type", "application/json")
+                .header("Authorization", "Bearer " + Constants.LESTBOT_TOKEN)
+                .POST(HttpRequest.BodyPublishers.ofString(requestBody))
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(SuccessResponse.builder()
+                .msg("still in dev mode").build());
+    }
+
+    private LetsBotModel generateGetLocationMessage(Representative representative, WhatsappMsg msg) {
+        return LetsBotModel.builder().phone(msg.getPhone()).body(msg.getMsg()
+                + "").build();
     }
 
     @Override
