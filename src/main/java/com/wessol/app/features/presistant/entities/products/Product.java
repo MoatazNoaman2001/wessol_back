@@ -48,6 +48,12 @@ public class Product {
     @JoinColumn(name = "company_id")
     private Company company;
 
+    @Column(name = "is_paid")
+    private Boolean isPaid;
+
+    @Column(name = "shipping_cost")
+    private long shippingCost = 0;
+
     @Column(name = "Cost", nullable = false)
     private long Cost;
 

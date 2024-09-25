@@ -32,7 +32,7 @@ import java.util.List;
 @Builder
 @Entity
 @Table(name="representativeTable")
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "nationalId")
+//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "nationalId")
 public class Representative implements UserDetails , Principal {
 
     @Id

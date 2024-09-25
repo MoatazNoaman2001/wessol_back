@@ -100,11 +100,16 @@ public class RepresentativeServiceImpl implements RepresentativeService {
                     var payType = product.getPayType();
                     var company = product.getCompany();
                     var place = product.getShippingPlace();
-                    var rep_Edited= product.getRepresentative();
+                    var rep_Edited = product.getRepresentative();
                     payType.setProducts(new ArrayList<>());
                     company.setProducts(new ArrayList<>());
                     place.setProducts(new ArrayList<>());
                     rep_Edited.setProducts(new ArrayList<>());
+                    var plan = rep_Edited.getMonthAttendancePay();
+                    if (plan != null)
+                        plan.setRepresentatives(new ArrayList<>());
+                    rep_Edited.setMonthAttendancePay(plan);
+
                     return Product.builder().id(product.getId())
                             .Cost(product.getCost())
                             .representative(rep_Edited)
