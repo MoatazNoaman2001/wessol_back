@@ -43,33 +43,35 @@ public class ClientServiceImpl implements ClientService {
         Product prd =pr.findById(id).orElseThrow(() -> new RuntimeException("cant find product"));
         if (response.getIsCanceled()){
             prd.setProductState(ProductState.Canceled);
-            pr.deleteById(prd.getId());
+//            pr.deleteById(prd.getId());
             pr.save(prd);
             return ResponseEntity.ok(SuccessResponse.builder().msg("canceled safely").build());
         }else if (response.getPostponed()){
             prd.setProductState(ProductState.Returned);
             prd.setReceivedDate(prd.getReceivedDate().plusDays(1));
-            pr.deleteById(prd.getId());
+//            pr.deleteById(prd.getId());
             pr.save(prd);
             return ResponseEntity.ok(SuccessResponse.builder().msg("postponed safely").build());
         }
-        Submission sub = Submission.builder()
-                .location(new Pair<Double, Double>(response.getLon(), response.getLit()))
-                .isPostponed(response.getPostponed())
-                .cause(response.getCause())
-                .build();
         String name = fileServices.uploadFile(path, file);
-        sub.setImgName(name);
-        sub.setProduct(prd);
-
-        sr.save(sub);
-
         prd.setVerifiedDate(
                 LocalDateTime.ofInstant(Calendar.getInstance().toInstant(), TimeZone.getDefault().toZoneId())
         );
         prd.setProductState(ProductState.WAIT);
-        pr.deleteById(prd.getId());
+
+        Submission sub = Submission.builder()
+                .location(new Pair<Double, Double>(response.getLon(), response.getLit()))
+                .isPostponed(response.getPostponed())
+                .cause(response.getCause())
+                .imgName(name)
+                .product(prd)
+                .build();
+        sub.setImgName(name);
+//        sub.setProduct(prd);
+        prd.setSub(sub);
+
         pr.save(prd);
+        sr.save(sub);
         return ResponseEntity.ok(SuccessResponse.builder().msg("confirmed safely").build());
     }
 

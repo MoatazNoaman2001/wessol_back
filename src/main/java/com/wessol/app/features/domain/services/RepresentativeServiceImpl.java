@@ -221,6 +221,15 @@ public class RepresentativeServiceImpl implements RepresentativeService {
     @Override
     public ResponseEntity<Representative> getProfile(String phoneNumber) {
         var rp = repRepo.findByPhoneNumber(phoneNumber);
+        if (rp.isPresent()){
+            Representative rep = rp.get();
+            Plan current = rep.getMonthAttendancePay();
+            if (current != null)
+                current.setRepresentatives(new ArrayList<>());
+            rep.setMonthAttendancePay(current);
+            rep.setProducts(rep.getProducts().stream().peek(product -> product.setRepresentative(null)).toList());
+            return  ResponseEntity.ok(rep);
+        }
         return rp.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Representative()));
     }
 

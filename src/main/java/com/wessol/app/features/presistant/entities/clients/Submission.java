@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Data
 @Entity
 @Builder
-@Table(name = "clientTable")
+@Table(name = "submission")
 public class Submission {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

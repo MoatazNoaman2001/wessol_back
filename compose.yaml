@@ -32,12 +32,21 @@ services:
       - DB_PASSWORD=$DB_PASSWORD
       - DB_NAME=$DB_NAME
       - DB_PORT=$DB_PORT
+  wessol-site:
+    container_name: wessol-site-app
+    image: wessol-site
+    restart: always
+    ports:
+      - "8080:80"
+    networks:
+      vpcbr:
+        ipv4_address: 10.5.0.7
   pgadmin:
     image: dpage/pgadmin4:latest
     container_name: pg-admin
     networks:
       vpcbr:
-        ipv4_address: 10.5.0.7
+        ipv4_address: 10.5.0.8
     environment:
       PGADMIN_DEFAULT_EMAIL: Moataz.noaman12@Gmail.com
       PGADMIN_DEFAULT_PASSWORD: $DB_PASSWORD
