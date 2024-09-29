@@ -23,18 +23,20 @@ public interface AdminService {
     ResponseEntity<SuccessResponse> UpdatePlan(PlanRequest addPlanRequest);
     ResponseEntity<SuccessResponse> DeletePlan(String title);
     ResponseEntity<List<Plan>> getAllAvailablePlans();
+    ResponseEntity<SuccessResponse> addNewCompany(CompanyDto companyDto);
+    ResponseEntity<SuccessResponse> deleteCompany(String name);
     ResponseEntity<List<Company>> getAllCompanies(String role, String id);
 
     ResponseEntity<List<Method>> getAllMethods(String role, String id);
     ResponseEntity<SuccessResponse> addNewMethod(AddMethod addMethod, MultipartFile file) throws IOException;
     ResponseEntity<SuccessResponse> deleteMethod(Long id);
+    ResponseEntity<String> getLoginLogs(Representative representative);
     ResponseEntity<SuccessResponse> updateMethod(String oldName, String newName, MultipartFile file) throws IOException;
 
     ResponseEntity<List<ShippingPlaceE>> getAllShippingPlaces();
     ResponseEntity<SuccessResponse> addNewShippingPlace(String name) throws IOException;
     ResponseEntity<SuccessResponse> deleteShippingPlace(Long id);
     ResponseEntity<SuccessResponse> updateShippingPlace(String oldName, String newName) throws IOException;
-    ResponseEntity<SuccessResponse> addNewCompany(CompanyDto companyDto);
     ResponseEntity<ServicesState> getServiceState();
     ResponseEntity<List<Product>> getAllProducts();
 }

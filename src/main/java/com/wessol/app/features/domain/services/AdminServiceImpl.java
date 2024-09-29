@@ -20,6 +20,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -169,6 +171,16 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    public ResponseEntity<String> getLoginLogs(Representative representative) {
+        try {
+            FileInputStream inputStream = new FileInputStream("logs/login_history.png");
+            String logs = new String(inputStream.readAllBytes());
+            return ResponseEntity.ok(logs);
+        } catch (IOException ignored) {}
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+
+    @Override
     public ResponseEntity<List<ShippingPlaceE>> getAllShippingPlaces() {
         return ResponseEntity.ok(sr.findAll());
     }
@@ -215,6 +227,12 @@ public class AdminServiceImpl implements AdminService {
     public ResponseEntity<SuccessResponse> addNewCompany(CompanyDto companyDto) {
         cr.save(Company.builder().name(companyDto.getName()).build());
         return ResponseEntity.status(HttpStatus.CREATED).body(SuccessResponse.builder().msg("created").build());
+    }
+
+    @Override
+    public ResponseEntity<SuccessResponse> deleteCompany(String name) {
+        cr.findByName(name).ifPresent(cr::delete);
+        return ResponseEntity.ok(SuccessResponse.builder().msg("deleted Successfully").build());
     }
 
     @Override

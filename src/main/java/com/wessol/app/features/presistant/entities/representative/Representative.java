@@ -1,14 +1,12 @@
 package com.wessol.app.features.presistant.entities.representative;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.wessol.app.features.presistant.entities.Role;
 import com.wessol.app.features.presistant.entities.opt.OTP;
 import com.wessol.app.features.presistant.entities.plan.Plan;
 import com.wessol.app.features.presistant.entities.products.Product;
-import com.wessol.app.features.presistant.entities.wallet.Wallet;
+import com.wessol.app.features.presistant.entities.wallet.BankWallet;
 import com.wessol.app.features.presistant.models.Pair;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
@@ -62,9 +60,11 @@ public class Representative implements UserDetails , Principal {
     @Nullable
     private Plan monthAttendancePay;
 
-    @OneToOne
-    @JoinColumn(name = "wal_id")
-    private Wallet wallet;
+//    @OneToOne
+//    @JoinColumn(name = "wal_id")
+    @Column(name = "bank_wallet")
+    @Embedded
+    private BankWallet wallet;
 
     @Column(nullable = true, name = "_plan_start_date")
     private LocalDateTime mothAttendancePayStartDate;

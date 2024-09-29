@@ -9,9 +9,11 @@ import com.wessol.app.features.presistant.entities.place.ShippingPlaceE;
 import com.wessol.app.features.presistant.entities.plan.Plan;
 import com.wessol.app.features.presistant.entities.products.*;
 import com.wessol.app.features.presistant.entities.representative.Representative;
+import com.wessol.app.features.presistant.entities.wallet.BankWallet;
 import com.wessol.app.features.presistant.models.auth.LetsBotModel;
 import com.wessol.app.features.presistant.models.auth.SuccessResponse;
 import com.wessol.app.features.presistant.models.product.GetProducts;
+import com.wessol.app.features.presistant.models.product.PayRecord;
 import com.wessol.app.features.presistant.models.rep.ProductRequest;
 import com.wessol.app.features.presistant.models.rep.WhatsappMsg;
 import com.wessol.app.features.presistant.repo.*;
@@ -79,6 +81,24 @@ public class RepresentativeServiceImpl implements RepresentativeService {
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", rep.isEmpty() ? "cant find representative" : "dont have any plan"));
 
+    }
+
+    @Override
+    public ResponseEntity<List<PayRecord>> getMyWallet(Representative representative) {
+        List<Product> wallet = new ArrayList<>();
+        pr.findByRepresentative(representative).ifPresent(products -> {
+            for (Product product : products) {
+                if (product.getIsPaid()){
+                    wallet.add(product);
+                }
+            }
+        });
+        return ResponseEntity.ok(wallet.stream().map(product -> PayRecord.builder()
+                .rec_name(product.getReceiverName())
+                .cost(product.getCost())
+                .date(product.getReceivedDate())
+                .payMethod(product.getPayType().getMethod())
+                .build()).toList());
     }
 
     @Override

@@ -52,13 +52,16 @@ public class Product {
     private Boolean isPaid;
 
     @Column(name = "shipping_cost")
-    private long shippingCost = 0;
+    private double shippingCost = 0;
 
     @Column(name = "Cost", nullable = false)
-    private long Cost;
+    private double Cost;
 
     @Column(name = "rep_earn" , nullable = false)
     private float representativeEarnings = 0.1f;
+
+    @Column(name = "rec_pay")
+    private double receivedPay = 0;
 
     @Enumerated
     private DriveType driveType;
@@ -84,7 +87,6 @@ public class Product {
     @Enumerated
     @Column(name = "name")
     private ProductState productState;
-
 
     @ManyToOne
     @JoinColumn(name = "rep_id")

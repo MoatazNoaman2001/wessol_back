@@ -9,6 +9,9 @@ services:
       - POSTGRES_PASSWORD=$DB_PASSWORD
     ports:
       - $DB_PORT:$DB_PORT
+    networks:
+      vpcbr:
+        ipv4_address: 10.5.0.5
     volumes:
       - postgres:/var/lib/postgresql/data
   app:
@@ -20,6 +23,9 @@ services:
     ports:
       - $PORT:$PORT
     restart: always
+    networks:
+      vpcbr:
+        ipv4_address: 10.5.0.6
     environment:
       - DB_HOST=postgres
       - DB_USER=$DB_USER
@@ -29,15 +35,21 @@ services:
   pgadmin:
     image: dpage/pgadmin4:latest
     container_name: pg-admin
+    networks:
+      vpcbr:
+        ipv4_address: 10.5.0.7
     environment:
       PGADMIN_DEFAULT_EMAIL: Moataz.noaman12@Gmail.com
       PGADMIN_DEFAULT_PASSWORD: $DB_PASSWORD
     ports:
       - "5050:80"
 networks:
-  spring-db:
-    driver: 'bridge'
-
+  vpcbr:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.5.0.0/16
+          gateway: 10.5.0.1
 volumes:
   postgres:
     driver: 'local'

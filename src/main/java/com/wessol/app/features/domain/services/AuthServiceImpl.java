@@ -5,6 +5,7 @@ import com.wessol.app.core.Config.Constants;
 import com.wessol.app.features.presistant.entities.Role;
 import com.wessol.app.features.presistant.entities.opt.OTP;
 import com.wessol.app.features.presistant.entities.representative.Representative;
+import com.wessol.app.features.presistant.entities.wallet.BankWallet;
 import com.wessol.app.features.presistant.models.auth.*;
 import com.wessol.app.features.presistant.repo.OtpRepo;
 import com.wessol.app.features.presistant.repo.RepresentativeRepository;
@@ -14,7 +15,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
+import java.io.*;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -22,6 +23,7 @@ import java.net.http.HttpResponse;
 import java.security.SecureRandom;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -47,6 +49,7 @@ public class AuthServiceImpl implements AuthService {
                 .name(model.getName())
                 .NationalId(model.getNationalId())
                 .phoneNumber(model.getPhoneNumber())
+                .wallet(BankWallet.builder().build())
                 .role(model.getIsAdmin().equalsIgnoreCase("true") ? Role.Admin: Role.Representative)
                 .build();
 
@@ -141,10 +144,16 @@ public class AuthServiceImpl implements AuthService {
         claims.put("national number" , user.getNationalId());
         var token = jwt.generateToken(claims , user);
         var otp = otpRepo.findByRepresentative(user).get().getLast();
-        if(otp.getValidateAt() != null)
+        if(otp.getValidateAt() != null) {
+            String filePath = "logs/login_history.txt";
+            String textToAppend = "[" + LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME) + "]  " + user.getNationalId();
+            try (FileWriter fileWriter = new FileWriter(filePath, true)) {
+                fileWriter.write(textToAppend + System.lineSeparator());
+            } catch (IOException ignored) {}
             return RequestResponse.builder().token(token).isAdmin(
                     user.getRole() == Role.Admin
             ).build();
+        }
         else return  RequestResponse.builder().token("not verified").build();
     }
 

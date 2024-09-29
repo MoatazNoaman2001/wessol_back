@@ -18,7 +18,7 @@ public class ProductsController {
 
     private final ClientService clientService;
 
-    @PostMapping("/confirm/${pid}")
+    @PostMapping("/confirm/{pid}")
     ResponseEntity<SuccessResponse> verifyUserProduct(@PathVariable String pid, @RequestPart MultipartFile file , @RequestPart ClientProductResponse response){
         try {
             return clientService.sendVerifyProductReceive(file, response, pid);

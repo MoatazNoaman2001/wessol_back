@@ -8,12 +8,10 @@ import com.wessol.app.features.presistant.entities.place.ShippingPlaceE;
 import com.wessol.app.features.presistant.entities.products.Product;
 import com.wessol.app.features.presistant.entities.representative.Representative;
 import com.wessol.app.features.presistant.models.admin.AddMethod;
-import com.wessol.app.features.presistant.models.auth.SendOTPModel;
 import com.wessol.app.features.presistant.models.company.CompanyDto;
 import com.wessol.app.features.presistant.entities.company.Company;
 import com.wessol.app.features.presistant.models.admin.PlanRequest;
 import com.wessol.app.features.presistant.models.auth.SuccessResponse;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -23,9 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/admin")
@@ -95,6 +91,11 @@ public class AdminController {
         return adminService.getAllMethods(isAdmin? Role.Admin.name() : Role.User.name(), rep.getNationalId());
     }
 
+    @GetMapping("/logs")
+    public  ResponseEntity<String> getLoginLogs(Authentication authentication){
+        var rep = (Representative ) authentication.getPrincipal();
+        return adminService.getLoginLogs(rep);
+    }
     @PostMapping("/add-place")
     public ResponseEntity<SuccessResponse> addPlace(@RequestPart String name) throws IOException {
         return adminService.addNewShippingPlace(name);

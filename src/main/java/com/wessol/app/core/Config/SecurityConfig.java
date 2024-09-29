@@ -1,5 +1,6 @@
 package com.wessol.app.core.Config;
 
+import com.wessol.app.features.presistant.entities.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -44,29 +45,34 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .cors(c-> c.configurationSource(corsConfigurationSource()))
+//                .headers(header -> header.contentTypeOptions())
 //                .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(req ->
                         req
-                                .requestMatchers(
-                                "/auth/**",
-                                "/p/**",
-                                "/product/confirm-user",
-                                "/prods",
-                                "/v2/api-docs",
-                                "/v3/api-docs",
-                                "/v3/api-docs/**",
-                                "/swagger-resources",
-                                "/swagger-resources/**",
-                                "/configuration/ui",
-                                "/configuration/security",
-                                "/swagger-ui.html",
-                                "/swagger-ui/index.html"
-                                )
-                                .permitAll()
+//                                .requestMatchers(
+//                                        "/auth/**",
+//                                        "/p/**",
+//                                        "/product/confirm-user",
+//                                        "/prods/confirm/**",
+//                                        "/v2/api-docs",
+//                                        "/v3/api-docs",
+//                                        "/v3/api-docs/**",
+//                                        "/swagger-resources",
+//                                        "/swagger-resources/**",
+//                                        "/configuration/ui",
+//                                        "/configuration/security",
+//                                        "/swagger-ui.html",
+//                                        "/admin/companies",
+//                                        "/swagger-ui/**",
+//                                        "/swagger-ui/index.html"
+//                                )
+//                                .authenticated()
+//                                .requestMatchers("/admin/**").hasRole(Role.Admin.name())
                                 .anyRequest()
-                                .authenticated()
+                                .permitAll()
                 )
+
                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(phoneAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

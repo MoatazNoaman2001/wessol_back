@@ -1,15 +1,15 @@
 package com.wessol.app.features.presentation.routes.rep;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.wessol.app.features.domain.services.RepresentativeService;
 import com.wessol.app.features.presistant.entities.Role;
 import com.wessol.app.features.presistant.entities.payments.Method;
 import com.wessol.app.features.presistant.entities.place.ShippingPlaceE;
-import com.wessol.app.features.presistant.entities.plan.Plan;
 import com.wessol.app.features.presistant.entities.products.Product;
 import com.wessol.app.features.presistant.entities.representative.Representative;
-import com.wessol.app.features.presistant.models.admin.PlanRequest;
 import com.wessol.app.features.presistant.models.auth.SuccessResponse;
 import com.wessol.app.features.presistant.models.product.GetProducts;
+import com.wessol.app.features.presistant.models.product.PayRecord;
 import com.wessol.app.features.presistant.models.rep.ProductRequest;
 import com.wessol.app.features.presistant.models.rep.WhatsappMsg;
 import lombok.RequiredArgsConstructor;
@@ -73,9 +73,15 @@ public class representativeController {
     }
 
     @PostMapping("/whatsapp-msg")
-    private ResponseEntity<SuccessResponse> sendWhatsAppMessage(Authentication authentication, @RequestBody WhatsappMsg msg){
+    private ResponseEntity<SuccessResponse> sendWhatsAppMessage(Authentication authentication, @RequestBody WhatsappMsg msg) throws JsonProcessingException {
         var rep = ((Representative) authentication.getPrincipal());
         return representativeService.sendWhatsappMessage(rep , msg);
+    }
+
+    @GetMapping("/wallet")
+    private ResponseEntity<List<PayRecord>> getMyWallet(Authentication authentication){
+        var rep = ((Representative) authentication.getPrincipal());
+        return representativeService.getMyWallet(rep);
     }
 
 }

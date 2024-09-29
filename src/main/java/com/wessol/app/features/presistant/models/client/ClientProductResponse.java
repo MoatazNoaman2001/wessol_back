@@ -13,7 +13,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ClientProductResponse {
 
-    private Pair<Double, Double> loc;
+    private Double lon;
+    private Double lit;
     private Boolean isCanceled;
     private Boolean postponed;
     private String cause;
