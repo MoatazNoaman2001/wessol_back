@@ -15,6 +15,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -74,6 +75,9 @@ public class Representative implements UserDetails , Principal {
 
     @OneToMany(mappedBy = "representative")
     private List<Product> products;
+
+    @CreatedDate
+    private LocalDateTime createDate;
 //
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

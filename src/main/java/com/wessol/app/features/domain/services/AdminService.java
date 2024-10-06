@@ -5,12 +5,14 @@ import com.wessol.app.features.presistant.entities.place.ShippingPlaceE;
 import com.wessol.app.features.presistant.entities.products.Product;
 import com.wessol.app.features.presistant.entities.representative.Representative;
 import com.wessol.app.features.presistant.models.admin.AddMethod;
-import com.wessol.app.features.presistant.models.company.CompanyDto;
+import com.wessol.app.features.presistant.models.company.addCompanyDto;
 import com.wessol.app.features.presistant.entities.company.Company;
 import com.wessol.app.features.presistant.entities.plan.Plan;
 import com.wessol.app.features.presistant.models.admin.PlanRequest;
 import com.wessol.app.features.presistant.models.admin.ServicesState;
 import com.wessol.app.features.presistant.models.auth.SuccessResponse;
+import com.wessol.app.features.presistant.models.company.updateCompanyDto;
+import com.wessol.app.features.presistant.models.rep.AdminRep;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,8 +25,9 @@ public interface AdminService {
     ResponseEntity<SuccessResponse> UpdatePlan(PlanRequest addPlanRequest);
     ResponseEntity<SuccessResponse> DeletePlan(String title);
     ResponseEntity<List<Plan>> getAllAvailablePlans();
-    ResponseEntity<SuccessResponse> addNewCompany(CompanyDto companyDto);
+    ResponseEntity<SuccessResponse> addNewCompany(addCompanyDto companyDto);
     ResponseEntity<SuccessResponse> deleteCompany(String name);
+    ResponseEntity<SuccessResponse> updateCompany(updateCompanyDto update);
     ResponseEntity<List<Company>> getAllCompanies(String role, String id);
 
     ResponseEntity<List<Method>> getAllMethods(String role, String id);
@@ -39,4 +42,6 @@ public interface AdminService {
     ResponseEntity<SuccessResponse> updateShippingPlace(String oldName, String newName) throws IOException;
     ResponseEntity<ServicesState> getServiceState();
     ResponseEntity<List<Product>> getAllProducts();
+
+    ResponseEntity<List<AdminRep>> getAllAdminReps();
 }

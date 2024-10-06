@@ -50,6 +50,7 @@ public class AuthServiceImpl implements AuthService {
                 .NationalId(model.getNationalId())
                 .phoneNumber(model.getPhoneNumber())
                 .wallet(BankWallet.builder().build())
+                .createDate(LocalDateTime.now())
                 .role(model.getIsAdmin().equalsIgnoreCase("true") ? Role.Admin: Role.Representative)
                 .build();
 

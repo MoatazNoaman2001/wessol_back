@@ -8,10 +8,12 @@ import com.wessol.app.features.presistant.entities.place.ShippingPlaceE;
 import com.wessol.app.features.presistant.entities.products.Product;
 import com.wessol.app.features.presistant.entities.representative.Representative;
 import com.wessol.app.features.presistant.models.admin.AddMethod;
-import com.wessol.app.features.presistant.models.company.CompanyDto;
+import com.wessol.app.features.presistant.models.company.addCompanyDto;
 import com.wessol.app.features.presistant.entities.company.Company;
 import com.wessol.app.features.presistant.models.admin.PlanRequest;
 import com.wessol.app.features.presistant.models.auth.SuccessResponse;
+import com.wessol.app.features.presistant.models.company.updateCompanyDto;
+import com.wessol.app.features.presistant.models.rep.AdminRep;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -60,8 +62,19 @@ public class AdminController {
     }
 
     @PostMapping("/add-company")
-    public ResponseEntity<SuccessResponse> addCompany(@RequestBody CompanyDto companyDto){
+    public ResponseEntity<SuccessResponse> addCompany(@RequestBody addCompanyDto companyDto, Authentication auth){
+        Representative rep = (Representative) auth.getPrincipal();
+        System.out.println(rep.getRole());
         return adminService.addNewCompany(companyDto);
+    }
+    @PostMapping("/update-company")
+    public ResponseEntity<SuccessResponse> updateCompany(@RequestBody updateCompanyDto update){
+        return adminService.updateCompany(update);
+    }
+
+    @PostMapping("/delete-company")
+    public ResponseEntity<SuccessResponse> deleteCompany(@RequestPart String name){
+        return adminService.deleteCompany(name);
     }
 
     @GetMapping("/prods")
@@ -70,7 +83,7 @@ public class AdminController {
     }
 
     @PostMapping("/add-method")
-    public ResponseEntity<SuccessResponse> addMethod(@RequestPart MultipartFile image,@RequestBody AddMethod addMethod) throws IOException {
+    public ResponseEntity<SuccessResponse> addMethod(@RequestPart MultipartFile image,@RequestPart AddMethod addMethod) throws IOException {
         return adminService.addNewMethod(addMethod, image);
     }
 
@@ -113,6 +126,11 @@ public class AdminController {
     @GetMapping("/get-all-places")
     public ResponseEntity<List<ShippingPlaceE>> getAllPlaces(){
         return adminService.getAllShippingPlaces();
+    }
+
+    @GetMapping("/reps")
+    public  ResponseEntity<List<AdminRep>> getAllRepresentatives(){
+        return adminService.getAllAdminReps();
     }
 
 }

@@ -6,12 +6,14 @@ import com.wessol.app.features.presistant.entities.place.ShippingPlaceE;
 import com.wessol.app.features.presistant.entities.products.Product;
 import com.wessol.app.features.presistant.entities.representative.Representative;
 import com.wessol.app.features.presistant.models.admin.AddMethod;
-import com.wessol.app.features.presistant.models.company.CompanyDto;
+import com.wessol.app.features.presistant.models.company.addCompanyDto;
 import com.wessol.app.features.presistant.entities.company.Company;
 import com.wessol.app.features.presistant.entities.plan.Plan;
 import com.wessol.app.features.presistant.models.admin.PlanRequest;
 import com.wessol.app.features.presistant.models.admin.ServicesState;
 import com.wessol.app.features.presistant.models.auth.SuccessResponse;
+import com.wessol.app.features.presistant.models.company.updateCompanyDto;
+import com.wessol.app.features.presistant.models.rep.AdminRep;
 import com.wessol.app.features.presistant.repo.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,7 +23,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -224,7 +225,7 @@ public class AdminServiceImpl implements AdminService {
 
 
     @Override
-    public ResponseEntity<SuccessResponse> addNewCompany(CompanyDto companyDto) {
+    public ResponseEntity<SuccessResponse> addNewCompany(addCompanyDto companyDto) {
         cr.save(Company.builder().name(companyDto.getName()).build());
         return ResponseEntity.status(HttpStatus.CREATED).body(SuccessResponse.builder().msg("created").build());
     }
@@ -233,6 +234,18 @@ public class AdminServiceImpl implements AdminService {
     public ResponseEntity<SuccessResponse> deleteCompany(String name) {
         cr.findByName(name).ifPresent(cr::delete);
         return ResponseEntity.ok(SuccessResponse.builder().msg("deleted Successfully").build());
+    }
+
+    @Override
+    public ResponseEntity<SuccessResponse> updateCompany(updateCompanyDto update) {
+        var companySearch = cr.findByName(update.getOldName());
+        if(companySearch.isPresent()){
+            var company = companySearch.get();
+            company.setName(update.getNewName());
+            cr.save(company);
+            return ResponseEntity.ok(SuccessResponse.builder().msg("company updated").build());
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @Override
@@ -246,6 +259,17 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public ResponseEntity<List<Product>> getAllProducts() {
         return ResponseEntity.ok(pr.findAll());
+    }
+
+    @Override
+    public ResponseEntity<List<AdminRep>> getAllAdminReps() {
+        var Reps = rp.findAll().stream().map(rep -> AdminRep.builder()
+                .id(rep.getNationalId())
+                .date(rep.getCreateDate())
+                .name(rep.getName())
+                .companies(rep.getProducts().stream().map(product -> product.getCompany().getName()).toList())
+                .build()).toList();
+        return ResponseEntity.ok(Reps);
     }
 
 }

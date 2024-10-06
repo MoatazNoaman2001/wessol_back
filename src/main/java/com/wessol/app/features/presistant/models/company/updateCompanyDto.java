@@ -5,6 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class CompanyDto {
-    String name;
+public class updateCompanyDto {
+    String oldName;
+    String newName;
 }
