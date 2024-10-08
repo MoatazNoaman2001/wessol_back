@@ -84,7 +84,7 @@ public class Product {
     @Column(name = "receiveDate")
     private LocalDateTime ReceivedDate;
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     @Column(name = "name")
     private ProductState productState;
 

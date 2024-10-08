@@ -8,13 +8,17 @@ import com.wessol.app.features.presistant.entities.place.ShippingPlaceE;
 import com.wessol.app.features.presistant.entities.products.Product;
 import com.wessol.app.features.presistant.entities.representative.Representative;
 import com.wessol.app.features.presistant.models.admin.AddMethod;
+import com.wessol.app.features.presistant.models.company.CompanyRate;
 import com.wessol.app.features.presistant.models.company.addCompanyDto;
 import com.wessol.app.features.presistant.entities.company.Company;
 import com.wessol.app.features.presistant.models.admin.PlanRequest;
 import com.wessol.app.features.presistant.models.auth.SuccessResponse;
 import com.wessol.app.features.presistant.models.company.updateCompanyDto;
+import com.wessol.app.features.presistant.models.product.AdminProductReceivedAndRefusedCount;
+import com.wessol.app.features.presistant.models.product.ProductDto;
 import com.wessol.app.features.presistant.models.rep.AdminRep;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -33,10 +37,32 @@ public class AdminController {
     private final AdminService adminService;
     private final AuthService authService;
 
+
+    @GetMapping("/companies/rate")
+    public ResponseEntity<List<CompanyRate>> getCompaniesRate(){
+        return adminService.getMonthsMove();
+    }
+
+    @GetMapping("/receiver_and_canceled")
+    public ResponseEntity<AdminProductReceivedAndRefusedCount> getRecAndRefCount(){
+        return adminService.getRecAndRefCount();
+    }
+
+    @GetMapping("/pr/count")
+    public ResponseEntity<Long> getPrCount(){
+        return adminService.getProductsCount();
+    }
+
     @GetMapping("/reps")
     public  ResponseEntity<List<Representative>> getAllReps(){
         return  adminService.getAllReps();
     }
+
+    @GetMapping("/admin_rep")
+    public  ResponseEntity<List<AdminRep>> getAllRepresentatives(){
+        return adminService.getAllAdminReps();
+    }
+
 
     @PostMapping("/add-plan")
     public ResponseEntity<SuccessResponse> addPlan(@RequestBody PlanRequest planRequest){
@@ -78,8 +104,8 @@ public class AdminController {
     }
 
     @GetMapping("/prods")
-    public ResponseEntity<List<Product>> getAllProducts(){
-        return adminService.getAllProducts();
+    public ResponseEntity<Page<ProductDto>> getAllProducts(@RequestParam int page , @RequestParam int size){
+        return adminService.getAllProducts(page , size);
     }
 
     @PostMapping("/add-method")
@@ -128,9 +154,5 @@ public class AdminController {
         return adminService.getAllShippingPlaces();
     }
 
-    @GetMapping("/reps")
-    public  ResponseEntity<List<AdminRep>> getAllRepresentatives(){
-        return adminService.getAllAdminReps();
-    }
 
 }

@@ -4,8 +4,10 @@ import com.wessol.app.features.presistant.entities.Role;
 import com.wessol.app.features.presistant.entities.payments.Method;
 import com.wessol.app.features.presistant.entities.place.ShippingPlaceE;
 import com.wessol.app.features.presistant.entities.products.Product;
+import com.wessol.app.features.presistant.entities.products.ProductState;
 import com.wessol.app.features.presistant.entities.representative.Representative;
 import com.wessol.app.features.presistant.models.admin.AddMethod;
+import com.wessol.app.features.presistant.models.company.CompanyRate;
 import com.wessol.app.features.presistant.models.company.addCompanyDto;
 import com.wessol.app.features.presistant.entities.company.Company;
 import com.wessol.app.features.presistant.entities.plan.Plan;
@@ -13,10 +15,14 @@ import com.wessol.app.features.presistant.models.admin.PlanRequest;
 import com.wessol.app.features.presistant.models.admin.ServicesState;
 import com.wessol.app.features.presistant.models.auth.SuccessResponse;
 import com.wessol.app.features.presistant.models.company.updateCompanyDto;
+import com.wessol.app.features.presistant.models.product.AdminProductReceivedAndRefusedCount;
+import com.wessol.app.features.presistant.models.product.ProductDto;
 import com.wessol.app.features.presistant.models.rep.AdminRep;
 import com.wessol.app.features.presistant.repo.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -24,6 +30,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -47,6 +55,41 @@ public class AdminServiceImpl implements AdminService {
 
     @Value("${base.url}")
     String url;
+
+    @Override
+    public ResponseEntity<List<CompanyRate>> getMonthsMove() {
+        List<Company> companies = cr.findAll();
+        var res = companies.stream().map(company -> CompanyRate.builder().companyName(company.getName())
+                .productReceived(company.getProducts().stream().filter(product -> product.getProductState() == ProductState.DELIVERED).count())
+                .productWait(company.getProducts().stream().filter(product ->
+                                product.getProductState() == ProductState.Pending || product.getProductState() == ProductState.WAIT
+                        ).count())
+                .productPending(company.getProducts().stream().filter(product ->
+                                product.getProductState() != ProductState.DELIVERED &&
+                                product.getProductState() != ProductState.Pending &&
+                                product.getProductState() != ProductState.WAIT
+                        ).count())
+                .date(LocalDateTime.now().format(DateTimeFormatter.ofPattern("MMMM")))
+
+                .build());
+        return  ResponseEntity.ok(res.toList());
+
+    }
+
+    @Override
+    public ResponseEntity<AdminProductReceivedAndRefusedCount> getRecAndRefCount() {
+        var canceled = pr.findByProductState(ProductState.Canceled);
+        var delivered = pr.findByProductState(ProductState.DELIVERED);
+
+        return ResponseEntity.ok(AdminProductReceivedAndRefusedCount.builder().refused(canceled.size())
+                .accepted(delivered.size()).build());
+    }
+
+    @Override
+    public ResponseEntity<Long> getProductsCount() {
+
+        return ResponseEntity.ok(pr.count());
+    }
 
     @Override
     public ResponseEntity<List<Representative>> getAllReps() {
@@ -257,8 +300,11 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public ResponseEntity<List<Product>> getAllProducts() {
-        return ResponseEntity.ok(pr.findAll());
+    public ResponseEntity<Page<ProductDto>> getAllProducts(int page, int size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Page<Product> promotions = pr.findAll(pageRequest);
+        Page<ProductDto> promotionDtos = promotions.map(ProductDto::fromProduct);
+        return ResponseEntity.ok(promotionDtos);
     }
 
     @Override

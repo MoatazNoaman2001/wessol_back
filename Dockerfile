@@ -4,6 +4,8 @@ FROM openjdk:21-jdk-slim
 # Set the working directory in the container
 WORKDIR /app
 
+RUN mvn clean package -Dmaven.test.skip=true
+
 # Copy the jar file from the host to the container
 COPY target/app-0.0.2.jar /app/wessol_backend.jar
 
