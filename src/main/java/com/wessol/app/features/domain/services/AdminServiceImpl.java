@@ -180,9 +180,7 @@ public class AdminServiceImpl implements AdminService {
     public ResponseEntity<SuccessResponse> addNewMethod(AddMethod addMethod, MultipartFile file) throws IOException {
         if (mr.findByMethod(addMethod.getMethodName()).isEmpty()) {
             var res = fileServices.uploadFile(path, file);
-            mr.save(
-                    Method.builder().method(addMethod.getMethodName()).imageName(res).build()
-            );
+            mr.save(Method.builder().method(addMethod.getMethodName()).imageName(res).build());
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(SuccessResponse.builder()
                 .msg("Method Created Successfully").build());
@@ -195,7 +193,7 @@ public class AdminServiceImpl implements AdminService {
             String filename  = "";
             if (file != null)
                 filename = fileServices.uploadFile(path, file);
-            mr.saveAndFlush(Method.builder().method(newName)
+            mr.saveAndFlush(Method.builder().method(newName != null? newName : method.getMethod())
                     .id(method.getId()).imageName(filename).build());
             return ResponseEntity.status(HttpStatus.OK).body(SuccessResponse.builder()
                     .msg("Method updated Successfully").build());

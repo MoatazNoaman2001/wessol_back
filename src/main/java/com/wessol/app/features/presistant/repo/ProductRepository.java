@@ -18,5 +18,5 @@ public interface ProductRepository extends JpaRepository<Product, String> {
 
     List<Product> findByProductState(ProductState productState);
 
-    Page<Product> getAllProductPaged(Pageable pageable);
+//    Page<Product> getAllProductPaged(Pageable pageable);
 }

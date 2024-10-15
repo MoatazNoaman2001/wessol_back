@@ -30,7 +30,7 @@ public class FileServicesImpl implements FileServices {
     }
 
     @Override
-    public InputStream getResourceFile(String path, String name) throws FileNotFoundException {
+    public FileInputStream getResourceFile(String path, String name) throws FileNotFoundException {
         //file path
         String filePath = path + File.separator + name;
         return new FileInputStream(filePath);

@@ -70,8 +70,8 @@ public class Product {
     @JoinColumn(name = "place_id")
     private ShippingPlaceE shippingPlace;
 
-    @OneToOne
-    @JoinColumn(name = "sub_id")
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "sub_id", referencedColumnName = "id")
     private Submission sub;
 
     @CreatedDate

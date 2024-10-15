@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wessol.app.core.Config.Constants;
 import com.wessol.app.features.presistant.entities.Role;
+import com.wessol.app.features.presistant.entities.opt.OTP;
 import com.wessol.app.features.presistant.entities.payments.Method;
 import com.wessol.app.features.presistant.entities.place.ShippingPlaceE;
 import com.wessol.app.features.presistant.entities.plan.Plan;
@@ -14,6 +15,7 @@ import com.wessol.app.features.presistant.models.auth.LetsBotModel;
 import com.wessol.app.features.presistant.models.auth.SuccessResponse;
 import com.wessol.app.features.presistant.models.product.GetProducts;
 import com.wessol.app.features.presistant.models.product.PayRecord;
+import com.wessol.app.features.presistant.models.product.ProductDto;
 import com.wessol.app.features.presistant.models.rep.ProductRequest;
 import com.wessol.app.features.presistant.models.rep.WhatsappMsg;
 import com.wessol.app.features.presistant.repo.*;
@@ -24,10 +26,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -161,8 +165,30 @@ public class RepresentativeServiceImpl implements RepresentativeService {
     }
 
     @Override
-    public ResponseEntity<SuccessResponse> sendWhatsappMessage(Representative representative, WhatsappMsg msg) throws JsonProcessingException {
+    public ResponseEntity<Map<ProductState , Integer>> getBoardState(Representative rep, LocalDateTime start, LocalDateTime end) {
+        Map<ProductState , Integer> counts = new HashMap<>();
 
+        for (ProductState state : ProductState.values()) {
+            counts.put(state ,pr.findByProductState(state)
+                    .stream().filter(product -> product.getDateCreated().isBefore(end) && product.getDateCreated().isAfter(start))
+                    .toList().size());
+        }
+
+        return ResponseEntity.ok(counts);
+    }
+
+    @Override
+    public ResponseEntity<List<ProductDto>> getUserProductsCurrent(Representative rep) {
+        List<ProductDto>productDtos = new ArrayList<>(){{
+            addAll(pr.findByProductState(ProductState.WAIT).stream().map(ProductDto::fromProduct).toList());
+            addAll(pr.findByProductState(ProductState.Pending).stream().map(ProductDto::fromProduct).toList());
+            addAll(pr.findByProductState(ProductState.Accepted).stream().map(ProductDto::fromProduct).toList());
+        }};
+        return null;
+    }
+
+    @Override
+    public ResponseEntity<SuccessResponse> sendWhatsappMessage(Representative representative, WhatsappMsg msg) throws IOException, InterruptedException {
         HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(30)).build();
         LetsBotModel letsBotModel = generateGetLocationMessage(representative, msg);
         String requestBody = new ObjectMapper().writeValueAsString(letsBotModel);
@@ -173,14 +199,19 @@ public class RepresentativeServiceImpl implements RepresentativeService {
                 .header("Authorization", "Bearer " + Constants.LESTBOT_TOKEN)
                 .POST(HttpRequest.BodyPublishers.ofString(requestBody))
                 .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        if (response.statusCode() == 200) {
+            return ResponseEntity.ok().body(SuccessResponse.builder().msg("message sent successfully").build());
+        }
 
         return ResponseEntity.status(HttpStatus.OK).body(SuccessResponse.builder()
                 .msg("still in dev mode").build());
     }
 
     private LetsBotModel generateGetLocationMessage(Representative representative, WhatsappMsg msg) {
+//        var product = pr.findById(msg.getProductId());
         return LetsBotModel.builder().phone(msg.getPhone()).body(msg.getMsg()
-                + "").build();
+                + "http://209.250.233.30:8080/location/" + msg.getProductId()).build();
     }
 
     @Override
@@ -193,7 +224,7 @@ public class RepresentativeServiceImpl implements RepresentativeService {
         var method = mr.findByMethod(request.getPay_type());
         var place = sr.findByPlace(request.getShip_place());
         if (rep.getMonthAttendancePay() == null)
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(SuccessResponse.builder().msg("rep has no plan").build());
+            return ResponseEntity.notFound().build();
 
         if (method.isPresent() && place.isPresent()) {
             Product prd = Product.builder()
@@ -236,7 +267,10 @@ public class RepresentativeServiceImpl implements RepresentativeService {
     @Override
     public ResponseEntity<List<Method>> getMethods(String role) {
         var methods = role.equals(Role.Admin.name()) ? mr.findAll() : mr.findAll()
-                .stream().peek(method -> method.setProducts(new ArrayList<>())).toList();
+                .stream().peek(method -> {
+                    method.setProducts(new ArrayList<>());
+                    method.setImageName(path + File.separator + method.getImageName());
+                }).toList();
         return ResponseEntity.ok(methods);
     }
 

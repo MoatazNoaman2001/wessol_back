@@ -21,6 +21,9 @@ public class ProductDto {
     private String planName;
     private String recPhone;
     private String repPhone;
+    private String state;
+    private String payLocation;
+    private String driveType;
     private Double totalCost;
     private Double companyCost;
     private Double repCost;
@@ -39,6 +42,9 @@ public class ProductDto {
                 .repPhone(product.getRepresentative().getPhoneNumber())
                 .planName(product.getRepresentative().getMonthAttendancePay().getTitle())
                 .totalCost(product.getCost())
+                .state(product.getProductState().name())
+                .payLocation(product.getShippingPlace().getPlace())
+                .driveType(product.getDriveType().name())
                 .companyCost(product.getShippingCost())
                 .repCost(product.getCost() * product.getRepresentativeEarnings())
                 .repWallet(product.getRepresentative().getWallet().getSaving())

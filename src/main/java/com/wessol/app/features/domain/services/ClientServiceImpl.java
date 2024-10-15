@@ -70,8 +70,8 @@ public class ClientServiceImpl implements ClientService {
 //        sub.setProduct(prd);
         prd.setSub(sub);
 
-        pr.save(prd);
         sr.save(sub);
+        pr.save(prd);
         return ResponseEntity.ok(SuccessResponse.builder().msg("confirmed safely").build());
     }
 

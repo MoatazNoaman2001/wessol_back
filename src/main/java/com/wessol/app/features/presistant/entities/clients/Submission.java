@@ -35,7 +35,7 @@ public class Submission {
     private String cause;
 
     @OneToOne
-    @JoinColumn(name = "prod_id")
+    @JoinColumn(name = "prod_id", referencedColumnName = "id")
     private Product product;
 
     @Enumerated

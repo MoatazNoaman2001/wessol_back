@@ -6,6 +6,7 @@ import com.wessol.app.features.presistant.entities.Role;
 import com.wessol.app.features.presistant.entities.payments.Method;
 import com.wessol.app.features.presistant.entities.place.ShippingPlaceE;
 import com.wessol.app.features.presistant.entities.products.Product;
+import com.wessol.app.features.presistant.entities.products.ProductState;
 import com.wessol.app.features.presistant.entities.representative.Representative;
 import com.wessol.app.features.presistant.models.auth.SuccessResponse;
 import com.wessol.app.features.presistant.models.product.GetProducts;
@@ -18,6 +19,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +46,12 @@ public class representativeController {
     public ResponseEntity<GetProducts> getMyProducts(Authentication authentication){
         var rep = (Representative) authentication.getPrincipal();
         return representativeService.getUserProducts(rep);
+    }
+
+    @GetMapping("/board-state")
+    public ResponseEntity<Map<ProductState, Integer>> getBoardState(Authentication authentication, @RequestPart String start, @RequestPart String end){
+        var rep = (Representative) authentication.getPrincipal();
+        return representativeService.getBoardState(rep, LocalDateTime.parse(start), LocalDateTime.parse(end));
     }
 
     @PostMapping("/addProduct")
@@ -73,7 +82,7 @@ public class representativeController {
     }
 
     @PostMapping("/whatsapp-msg")
-    private ResponseEntity<SuccessResponse> sendWhatsAppMessage(Authentication authentication, @RequestBody WhatsappMsg msg) throws JsonProcessingException {
+    private ResponseEntity<SuccessResponse> sendWhatsAppMessage(Authentication authentication, @RequestBody WhatsappMsg msg) throws IOException, InterruptedException {
         var rep = ((Representative) authentication.getPrincipal());
         return representativeService.sendWhatsappMessage(rep , msg);
     }

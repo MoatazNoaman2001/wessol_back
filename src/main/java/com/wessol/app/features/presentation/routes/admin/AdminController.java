@@ -17,6 +17,7 @@ import com.wessol.app.features.presistant.models.company.updateCompanyDto;
 import com.wessol.app.features.presistant.models.product.AdminProductReceivedAndRefusedCount;
 import com.wessol.app.features.presistant.models.product.ProductDto;
 import com.wessol.app.features.presistant.models.rep.AdminRep;
+import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -93,12 +94,12 @@ public class AdminController {
         System.out.println(rep.getRole());
         return adminService.addNewCompany(companyDto);
     }
-    @PostMapping("/update-company")
+    @PutMapping("/update-company")
     public ResponseEntity<SuccessResponse> updateCompany(@RequestBody updateCompanyDto update){
         return adminService.updateCompany(update);
     }
 
-    @PostMapping("/delete-company")
+    @DeleteMapping("/delete-company")
     public ResponseEntity<SuccessResponse> deleteCompany(@RequestPart String name){
         return adminService.deleteCompany(name);
     }
@@ -109,16 +110,16 @@ public class AdminController {
     }
 
     @PostMapping("/add-method")
-    public ResponseEntity<SuccessResponse> addMethod(@RequestPart MultipartFile image,@RequestPart AddMethod addMethod) throws IOException {
+    public ResponseEntity<SuccessResponse> addMethod(@RequestPart(required = false) MultipartFile image,@RequestPart AddMethod addMethod) throws IOException {
         return adminService.addNewMethod(addMethod, image);
     }
 
     @PutMapping("/update-method")
-    public ResponseEntity<SuccessResponse> updateMethod(@RequestPart String oldName, @RequestPart String newName, @RequestPart MultipartFile image) throws IOException {
+    public ResponseEntity<SuccessResponse> updateMethod(@RequestPart String oldName, @RequestPart(required = false) String newName, @RequestPart(required = false) MultipartFile image) throws IOException {
         return adminService.updateMethod(oldName, newName, image);
     }
-    @DeleteMapping("/delete-method")
-    public ResponseEntity<SuccessResponse> deleteMethod(@RequestPart Long id){
+    @DeleteMapping("/delete-method/{id}")
+    public ResponseEntity<SuccessResponse> deleteMethod(@PathVariable("id") Long id){
         return adminService.deleteMethod(id);
     }
 

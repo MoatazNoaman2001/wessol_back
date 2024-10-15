@@ -78,11 +78,9 @@ public class AppApplication {
             }
 
             if (mr.findAll().isEmpty()) {
-                mr.save(Method.builder().method("Visa").build());
-                mr.save(Method.builder().method("MasterCard").build());
-                mr.save(Method.builder().method("AmericanExpress").build());
-                mr.save(Method.builder().method("Paypal").build());
-                mr.save(Method.builder().method("Diners").build());
+                mr.save(Method.builder().method("نقدي").build());
+                mr.save(Method.builder().method("تحويل").build());
+                mr.save(Method.builder().method("شبكة").build());
             }
 
             if(sr.findAll().isEmpty()){
