@@ -145,8 +145,8 @@ public class AdminController {
     public ResponseEntity<SuccessResponse> updatePlace(@RequestPart String oldName, @RequestPart String newName) throws IOException {
         return adminService.updateShippingPlace(oldName, newName);
     }
-    @DeleteMapping("/delete-place")
-    public ResponseEntity<SuccessResponse> deletePlace(@RequestPart Long id){
+    @DeleteMapping("/delete-place/{id}")
+    public ResponseEntity<SuccessResponse> deletePlace(@PathVariable("id") Long id){
         return adminService.deleteShippingPlace(id);
     }
 

@@ -1,11 +1,20 @@
 package com.wessol.app.features.presistant.models.product;
 
 
+import com.wessol.app.features.presistant.entities.clients.Submission;
+import com.wessol.app.features.presistant.entities.company.Company;
+import com.wessol.app.features.presistant.entities.payments.Method;
+import com.wessol.app.features.presistant.entities.place.ShippingPlaceE;
+import com.wessol.app.features.presistant.entities.products.DriveType;
 import com.wessol.app.features.presistant.entities.products.Product;
+import com.wessol.app.features.presistant.entities.products.ProductState;
+import com.wessol.app.features.presistant.entities.representative.Representative;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
 
@@ -31,6 +40,8 @@ public class ProductDto {
     private Double companyWallet;
     private LocalDateTime chargeDate;
     private String payMethod;
+    private Boolean isPaid;
+    private Submission sub;
 
     public static ProductDto fromProduct(Product product){
         return  ProductDto.builder()
@@ -51,6 +62,8 @@ public class ProductDto {
                 .companyWallet(0.0)
                 .chargeDate(product.getReceivedDate())
                 .payMethod(product.getPayType().getMethod())
+                .isPaid(product.getIsPaid())
+                .sub(product.getSub())
                 .build();
     }
 }

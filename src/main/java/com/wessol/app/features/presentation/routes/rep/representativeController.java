@@ -8,17 +8,22 @@ import com.wessol.app.features.presistant.entities.place.ShippingPlaceE;
 import com.wessol.app.features.presistant.entities.products.Product;
 import com.wessol.app.features.presistant.entities.products.ProductState;
 import com.wessol.app.features.presistant.entities.representative.Representative;
+import com.wessol.app.features.presistant.entities.wallet.BankWallet;
 import com.wessol.app.features.presistant.models.auth.SuccessResponse;
 import com.wessol.app.features.presistant.models.product.GetProducts;
 import com.wessol.app.features.presistant.models.product.PayRecord;
+import com.wessol.app.features.presistant.models.product.ProductDto;
 import com.wessol.app.features.presistant.models.rep.ProductRequest;
 import com.wessol.app.features.presistant.models.rep.WhatsappMsg;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.query.QueryParameter;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -48,6 +53,15 @@ public class representativeController {
         return representativeService.getUserProducts(rep);
     }
 
+    @GetMapping("/products")
+    public ResponseEntity<List<ProductDto>> getProductsByState(@RequestParam("state") String state , Authentication authentication){
+        var rep = (Representative) authentication.getPrincipal();
+        if (state.equals("current"))
+            return representativeService.getUserProductsCurrent(rep);
+        else if (state.equals("previous"))
+            return representativeService.getUserProductsPrevious(rep);
+        return ResponseEntity.notFound().build();
+    }
     @GetMapping("/board-state")
     public ResponseEntity<Map<ProductState, Integer>> getBoardState(Authentication authentication, @RequestPart String start, @RequestPart String end){
         var rep = (Representative) authentication.getPrincipal();
@@ -91,6 +105,25 @@ public class representativeController {
     private ResponseEntity<List<PayRecord>> getMyWallet(Authentication authentication){
         var rep = ((Representative) authentication.getPrincipal());
         return representativeService.getMyWallet(rep);
+    }
+
+    @PutMapping("/set-image")
+    private ResponseEntity<SuccessResponse> setProfileImage(@RequestPart MultipartFile image, Authentication authentication){
+        var rep = ((Representative) authentication.getPrincipal());
+        return representativeService.updateMyImg(image, rep.getPhoneNumber());
+    }
+
+    @PutMapping("/set-wallet")
+    private ResponseEntity<SuccessResponse> setWallet(@RequestBody BankWallet wallet, Authentication authentication){
+        var rep = ((Representative) authentication.getPrincipal());
+        return representativeService.updateMyWallet(wallet, rep.getPhoneNumber());
+    }
+
+
+    @PutMapping("/get-image")
+    private ResponseEntity<SuccessResponse> getProfileImage(Authentication authentication) throws FileNotFoundException {
+        var rep = ((Representative) authentication.getPrincipal());
+        return representativeService.getMyImg(rep.getPhoneNumber());
     }
 
 }

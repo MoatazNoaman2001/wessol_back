@@ -91,21 +91,21 @@ public class AppApplication {
                 ));
             }
 
-            if (rr.findAll().isEmpty()) {
-                var rep = Representative.builder()
-                        .role(Role.Admin)
-                        .phoneNumber("201098518194")
-                        .NationalId("30107222502032")
-                        .name("Eng.Moataz").build();
-                rr.save(rep);
-                or.save(
-                        OTP.builder()
-                                .OTP(pe.encode("889745"))
-                                .expiresAt(LocalDateTime.now().plusDays(30))
-                                .representative(rep)
-                        .build()
-                );
-            }
+//            if (rr.findAll().isEmpty()) {
+//                var rep = Representative.builder()
+//                        .role(Role.Admin)
+//                        .phoneNumber("201098518194")
+//                        .NationalId("30107222502032")
+//                        .name("Eng.Moataz").build();
+//                rr.save(rep);
+//                or.save(
+//                        OTP.builder()
+//                                .OTP(pe.encode("889745"))
+//                                .expiresAt(LocalDateTime.now().plusDays(30))
+//                                .representative(rep)
+//                        .build()
+//                );
+//            }
         };
     }
 

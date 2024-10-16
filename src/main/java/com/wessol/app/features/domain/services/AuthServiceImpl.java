@@ -49,7 +49,7 @@ public class AuthServiceImpl implements AuthService {
                 .name(model.getName())
                 .NationalId(model.getNationalId())
                 .phoneNumber(model.getPhoneNumber())
-                .wallet(BankWallet.builder().build())
+                .wallet(BankWallet.builder().Saving(0.0).iban("").Saving(0.0).build())
                 .createDate(LocalDateTime.now())
                 .role(model.getIsAdmin().equalsIgnoreCase("true") ? Role.Admin: Role.Representative)
                 .build();

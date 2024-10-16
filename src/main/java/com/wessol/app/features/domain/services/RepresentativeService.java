@@ -1,11 +1,10 @@
 package com.wessol.app.features.domain.services;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.wessol.app.features.presistant.entities.payments.Method;
 import com.wessol.app.features.presistant.entities.place.ShippingPlaceE;
-import com.wessol.app.features.presistant.entities.products.Product;
 import com.wessol.app.features.presistant.entities.products.ProductState;
 import com.wessol.app.features.presistant.entities.representative.Representative;
+import com.wessol.app.features.presistant.entities.wallet.BankWallet;
 import com.wessol.app.features.presistant.models.auth.SuccessResponse;
 import com.wessol.app.features.presistant.models.product.GetProducts;
 import com.wessol.app.features.presistant.models.product.PayRecord;
@@ -15,6 +14,7 @@ import com.wessol.app.features.presistant.models.rep.WhatsappMsg;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,11 +26,14 @@ public interface RepresentativeService {
 
     ResponseEntity<List<PayRecord>> getMyWallet(Representative representative);
     ResponseEntity<SuccessResponse> updateMyImg(MultipartFile file, String phoneNumber);
+    ResponseEntity<SuccessResponse> updateMyWallet(BankWallet wallet, String phoneNumber);
+    ResponseEntity<SuccessResponse> getMyImg(String phoneNumber) throws FileNotFoundException;
 
     ResponseEntity<GetProducts> getUserProducts(Representative rep);
 
     ResponseEntity<Map<ProductState, Integer>> getBoardState(Representative rep , LocalDateTime start, LocalDateTime end);
     ResponseEntity<List<ProductDto>> getUserProductsCurrent(Representative rep);
+    ResponseEntity<List<ProductDto>> getUserProductsPrevious(Representative rep);
 
     ResponseEntity<SuccessResponse> sendWhatsappMessage(Representative representative, WhatsappMsg msg) throws IOException, InterruptedException;
 

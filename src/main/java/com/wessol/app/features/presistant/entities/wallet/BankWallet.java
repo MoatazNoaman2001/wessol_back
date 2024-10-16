@@ -25,6 +25,8 @@ public class BankWallet {
 
 //    @Column(name = "saving", nullable = false)
     private Double Saving = 0.0;
+    private String bankUserName;
+    private String bankName;
 
 //    @Column(name = "iban")
     private String iban;

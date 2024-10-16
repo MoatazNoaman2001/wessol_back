@@ -22,11 +22,13 @@ import com.wessol.app.features.presistant.repo.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -110,20 +112,35 @@ public class RepresentativeServiceImpl implements RepresentativeService {
         boolean isUserExist = repRepo.findByPhoneNumber(phoneNumber).isPresent();
         if (isUserExist) {
             Representative rep = repRepo.findByPhoneNumber(phoneNumber).get();
-            if (rep.getMonthAttendancePay() != null) {
-                planRepository.delete(rep.getMonthAttendancePay());
-            }
             String fileName = "";
             try {
-                fileServices.uploadFile(path, file);
+                fileName = fileServices.uploadFile(path, file);
+                rep.setImageName(fileName);
+                repRepo.saveAndFlush(rep);
+                return ResponseEntity.ok(SuccessResponse.builder().msg("image updated").build());
             } catch (IOException e) {
                 return ResponseEntity.status(HttpStatus.CONFLICT).build();
             }
-            rep.setImageName(fileName);
-            repRepo.save(rep);
-            return ResponseEntity.ok(SuccessResponse.builder().msg("image updated").build());
         }
         return ResponseEntity.notFound().build();
+    }
+
+    @Override
+    public ResponseEntity<SuccessResponse> updateMyWallet(BankWallet wallet, String phoneNumber) {
+        var rep = repRepo.findByPhoneNumber(phoneNumber);
+        if (rep.isPresent()){
+            var representative = rep.get();
+            representative.setWallet(wallet);
+            repRepo.saveAndFlush(representative);
+            return  ResponseEntity.ok(SuccessResponse.builder().msg("wallet updated").build());
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @Override
+    public ResponseEntity<SuccessResponse> getMyImg(String phoneNumber) throws FileNotFoundException {
+        var image = fileServices.getResourceFile(path , repRepo.findByPhoneNumber(phoneNumber).get().getImageName());
+        return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).build();
     }
 
     @Override
@@ -184,7 +201,18 @@ public class RepresentativeServiceImpl implements RepresentativeService {
             addAll(pr.findByProductState(ProductState.Pending).stream().map(ProductDto::fromProduct).toList());
             addAll(pr.findByProductState(ProductState.Accepted).stream().map(ProductDto::fromProduct).toList());
         }};
-        return null;
+        return ResponseEntity.ok(productDtos);
+    }
+
+
+    @Override
+    public ResponseEntity<List<ProductDto>> getUserProductsPrevious(Representative rep) {
+        List<ProductDto>productDtos = new ArrayList<>(){{
+            addAll(pr.findByProductState(ProductState.DELIVERED).stream().map(ProductDto::fromProduct).toList());
+            addAll(pr.findByProductState(ProductState.Canceled).stream().map(ProductDto::fromProduct).toList());
+            addAll(pr.findByProductState(ProductState.Returned).stream().map(ProductDto::fromProduct).toList());
+        }};
+        return ResponseEntity.ok(productDtos);
     }
 
     @Override
