@@ -16,6 +16,7 @@ import com.wessol.app.features.presistant.models.company.updateCompanyDto;
 import com.wessol.app.features.presistant.models.product.AdminProductReceivedAndRefusedCount;
 import com.wessol.app.features.presistant.models.product.ProductDto;
 import com.wessol.app.features.presistant.models.rep.AdminRep;
+import com.wessol.app.features.presistant.models.rep.RepresentativeDto;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
@@ -53,6 +54,7 @@ public interface AdminService {
 
     ResponseEntity<List<AdminRep>> getAllAdminReps();
 
-
+    ResponseEntity<List<ProductDto>> getAllInvoice(String start, String end, Integer id);
+    ResponseEntity<List<RepresentativeDto>> getAllReps(String start, String end, Integer id);
 
 }

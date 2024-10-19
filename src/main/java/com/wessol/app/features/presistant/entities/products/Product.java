@@ -92,4 +92,10 @@ public class Product {
     @JoinColumn(name = "rep_id")
     private Representative representative;
 
+    public void confirmReceive(){
+        ReceivedDate = LocalDateTime.now();
+        isPaid = true;
+        productState = ProductState.DELIVERED;
+    }
+
 }

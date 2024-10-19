@@ -38,6 +38,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -196,23 +197,36 @@ public class RepresentativeServiceImpl implements RepresentativeService {
 
     @Override
     public ResponseEntity<List<ProductDto>> getUserProductsCurrent(Representative rep) {
-        List<ProductDto>productDtos = new ArrayList<>(){{
+        List<ProductDto>productDtos = new ArrayList<ProductDto>(){{
             addAll(pr.findByProductState(ProductState.WAIT).stream().map(ProductDto::fromProduct).toList());
             addAll(pr.findByProductState(ProductState.Pending).stream().map(ProductDto::fromProduct).toList());
             addAll(pr.findByProductState(ProductState.Accepted).stream().map(ProductDto::fromProduct).toList());
-        }};
+        }}.stream().filter(productDto -> productDto.getRepPhone().equals(rep.getPhoneNumber())).collect(Collectors.toCollection(ArrayList::new));
         return ResponseEntity.ok(productDtos);
     }
 
 
     @Override
     public ResponseEntity<List<ProductDto>> getUserProductsPrevious(Representative rep) {
-        List<ProductDto>productDtos = new ArrayList<>(){{
+        List<ProductDto>productDtos = new ArrayList<ProductDto>(){{
             addAll(pr.findByProductState(ProductState.DELIVERED).stream().map(ProductDto::fromProduct).toList());
             addAll(pr.findByProductState(ProductState.Canceled).stream().map(ProductDto::fromProduct).toList());
             addAll(pr.findByProductState(ProductState.Returned).stream().map(ProductDto::fromProduct).toList());
-        }};
+            stream().filter(productDto -> productDto.getRecPhone().equals(rep.getPhoneNumber()));
+        }}.stream().filter(productDto -> productDto.getRepPhone().equals(rep.getPhoneNumber())).collect(Collectors.toCollection(ArrayList::new));
         return ResponseEntity.ok(productDtos);
+    }
+
+    @Override
+    public ResponseEntity<SuccessResponse> confirmReceive(Representative rep, String id) {
+        var prod = pr.findById(id);
+        if (prod.isPresent()){
+            Product product = prod.get();
+            product.confirmReceive();
+            pr.saveAndFlush(product);
+            return  ResponseEntity.ok(SuccessResponse.builder().msg("product receive confirmed").build());
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @Override

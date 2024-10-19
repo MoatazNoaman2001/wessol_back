@@ -88,6 +88,7 @@ public class representativeController {
         boolean isAdmin = authorities.stream().anyMatch(role -> role.getAuthority().equals(Role.Admin.name()));
         return representativeService.getMethods(isAdmin? Role.Admin.name() :  Role.User.name());
     }
+
     @GetMapping("/shipping-places")
     private ResponseEntity<List<ShippingPlaceE>> getShippingMethods(Authentication authentication){
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();

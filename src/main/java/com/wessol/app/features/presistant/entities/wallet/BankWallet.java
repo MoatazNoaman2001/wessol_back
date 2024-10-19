@@ -16,18 +16,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BankWallet {
-
-
-//    @OneToOne
-//    @JoinColumn(name = "rep_wal_id")
-//    private Representative representative;
-//
-
-//    @Column(name = "saving", nullable = false)
     private Double Saving = 0.0;
     private String bankUserName;
     private String bankName;
-
-//    @Column(name = "iban")
     private String iban;
 }

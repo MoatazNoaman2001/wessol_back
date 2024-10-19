@@ -61,8 +61,6 @@ public class Representative implements UserDetails , Principal {
     @Nullable
     private Plan monthAttendancePay;
 
-//    @OneToOne
-//    @JoinColumn(name = "wal_id")
     @Column(name = "bank_wallet")
     @Embedded
     private BankWallet wallet;

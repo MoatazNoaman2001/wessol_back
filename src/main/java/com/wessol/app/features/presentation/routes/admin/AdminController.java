@@ -15,8 +15,10 @@ import com.wessol.app.features.presistant.models.admin.PlanRequest;
 import com.wessol.app.features.presistant.models.auth.SuccessResponse;
 import com.wessol.app.features.presistant.models.company.updateCompanyDto;
 import com.wessol.app.features.presistant.models.product.AdminProductReceivedAndRefusedCount;
+import com.wessol.app.features.presistant.models.product.GetInvoices;
 import com.wessol.app.features.presistant.models.product.ProductDto;
 import com.wessol.app.features.presistant.models.rep.AdminRep;
+import com.wessol.app.features.presistant.models.rep.RepresentativeDto;
 import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -156,4 +158,13 @@ public class AdminController {
     }
 
 
+    @GetMapping("/invoices")
+    public ResponseEntity<List<ProductDto>> getInvoices(@RequestBody GetInvoices invoices){
+        return adminService.getAllInvoice(invoices.getStart(), invoices.getEnd() , invoices.getId());
+    }
+
+    @GetMapping("/users")
+    public ResponseEntity<List<RepresentativeDto>> getUsers(@RequestBody GetInvoices invoices){
+        return adminService.getAllReps(invoices.getStart(), invoices.getEnd() , invoices.getId());
+    }
 }

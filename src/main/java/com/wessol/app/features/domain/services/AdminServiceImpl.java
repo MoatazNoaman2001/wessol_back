@@ -18,6 +18,7 @@ import com.wessol.app.features.presistant.models.company.updateCompanyDto;
 import com.wessol.app.features.presistant.models.product.AdminProductReceivedAndRefusedCount;
 import com.wessol.app.features.presistant.models.product.ProductDto;
 import com.wessol.app.features.presistant.models.rep.AdminRep;
+import com.wessol.app.features.presistant.models.rep.RepresentativeDto;
 import com.wessol.app.features.presistant.repo.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -314,6 +315,33 @@ public class AdminServiceImpl implements AdminService {
                 .companies(rep.getProducts().stream().map(product -> product.getCompany().getName()).toList())
                 .build()).toList();
         return ResponseEntity.ok(Reps);
+    }
+
+    @Override
+    public ResponseEntity<List<ProductDto>> getAllInvoice(String start, String end, Integer id) {
+        List<ProductDto> products = pr.findByProductState(ProductState.DELIVERED).stream()
+                .filter(product -> product.getVerifiedDate().isAfter(LocalDateTime.parse(start)) &&
+                                product.getVerifiedDate().isBefore(LocalDateTime.parse(end)) &&
+                        (id == null || Objects.equals(product.getRepresentative().getMonthAttendancePay().getId(), id))
+                )
+                .map(ProductDto::fromProduct).toList();
+        return ResponseEntity.ok(products);
+    }
+
+    @Override
+    public ResponseEntity<List<RepresentativeDto>> getAllReps(String start, String end, Integer id) {
+        List<RepresentativeDto> reps = rp.findAll()
+                .stream().filter(
+                        representative ->
+                                representative.getMothAttendancePayStartDate().isAfter(LocalDateTime.parse(start))&&
+                                representative.getMothAttendancePayStartDate().isBefore(LocalDateTime.parse(end))
+                ).map(representative -> RepresentativeDto.builder()
+                        .companyName(representative.getProducts().stream().map(product -> product.getCompany().getName()).toList())
+                        .id(representative.getNationalId())
+                        .name(representative.getName())
+                        .date(representative.getMothAttendancePayStartDate())
+                        .build()).toList();
+        return ResponseEntity.ok(reps);
     }
 
 }

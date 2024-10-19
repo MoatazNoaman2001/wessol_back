@@ -35,6 +35,8 @@ public interface RepresentativeService {
     ResponseEntity<List<ProductDto>> getUserProductsCurrent(Representative rep);
     ResponseEntity<List<ProductDto>> getUserProductsPrevious(Representative rep);
 
+    ResponseEntity<SuccessResponse> confirmReceive(Representative rep, String id);
+
     ResponseEntity<SuccessResponse> sendWhatsappMessage(Representative representative, WhatsappMsg msg) throws IOException, InterruptedException;
 
     ResponseEntity<SuccessResponse> addProduct(ProductRequest request);
