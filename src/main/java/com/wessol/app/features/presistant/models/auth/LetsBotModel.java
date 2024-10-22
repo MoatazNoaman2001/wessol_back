@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class LetsBotModel {
+public class    LetsBotModel {
     private String phone;
     private String body;
 }

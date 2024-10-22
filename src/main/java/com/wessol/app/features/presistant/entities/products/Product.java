@@ -84,6 +84,12 @@ public class Product {
     @Column(name = "receiveDate")
     private LocalDateTime ReceivedDate;
 
+    @Column(name = "returnDate")
+    private LocalDateTime returnDate;
+
+    @Column(name = "cancelDate")
+    private LocalDateTime cancelDate;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "name")
     private ProductState productState;
@@ -98,4 +104,12 @@ public class Product {
         productState = ProductState.DELIVERED;
     }
 
+    public void returnProduct(){
+        returnDate = LocalDateTime.now();
+        productState = ProductState.Returned;
+    }
+    public void cancelProduct(){
+        cancelDate = LocalDateTime.now();
+        productState = ProductState.Canceled;
+    }
 }

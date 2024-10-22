@@ -39,6 +39,8 @@ public class ProductDto {
     private Double repWallet;
     private Double companyWallet;
     private LocalDateTime chargeDate;
+    private LocalDateTime returnDate;
+    private LocalDateTime cancelDate;
     private String payMethod;
     private Boolean isPaid;
     private Submission sub;
@@ -61,6 +63,8 @@ public class ProductDto {
                 .repWallet(product.getRepresentative().getWallet().getSaving())
                 .companyWallet(0.0)
                 .chargeDate(product.getReceivedDate())
+                .returnDate(product.getReturnDate())
+                .cancelDate(product.getCancelDate())
                 .payMethod(product.getPayType().getMethod())
                 .isPaid(product.getIsPaid())
                 .sub(product.getSub())

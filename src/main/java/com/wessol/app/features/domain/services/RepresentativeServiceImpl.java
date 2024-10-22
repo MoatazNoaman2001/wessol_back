@@ -36,8 +36,10 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Service
@@ -196,26 +198,44 @@ public class RepresentativeServiceImpl implements RepresentativeService {
     }
 
     @Override
-    public ResponseEntity<List<ProductDto>> getUserProductsCurrent(Representative rep) {
+    public ResponseEntity<List<ProductDto>> getUserProductsCurrent(Representative rep, String start, String end) {
         List<ProductDto>productDtos = new ArrayList<ProductDto>(){{
-            addAll(pr.findByProductState(ProductState.WAIT).stream().map(ProductDto::fromProduct).toList());
-            addAll(pr.findByProductState(ProductState.Pending).stream().map(ProductDto::fromProduct).toList());
-            addAll(pr.findByProductState(ProductState.Accepted).stream().map(ProductDto::fromProduct).toList());
+            addAll(pr.findByProductState(ProductState.WAIT).stream().filter(product ->
+                            product.getDateCreated().isAfter(LocalDateTime.parse(start))
+                                    && product.getDateCreated().isBefore(LocalDateTime.parse(end)))
+                    .map(ProductDto::fromProduct).toList());
+            addAll(pr.findByProductState(ProductState.Pending).stream().filter(product ->
+                            product.getDateCreated().isAfter(LocalDateTime.parse(start))
+                                    && product.getDateCreated().isBefore(LocalDateTime.parse(end)))
+                    .map(ProductDto::fromProduct).toList());
+            addAll(pr.findByProductState(ProductState.Accepted).stream().filter(product ->
+                            product.getDateCreated().isAfter(LocalDateTime.parse(start))
+                                    && product.getDateCreated().isBefore(LocalDateTime.parse(end)))
+                    .map(ProductDto::fromProduct).toList());
         }}.stream().filter(productDto -> productDto.getRepPhone().equals(rep.getPhoneNumber())).collect(Collectors.toCollection(ArrayList::new));
         return ResponseEntity.ok(productDtos);
     }
 
 
     @Override
-    public ResponseEntity<List<ProductDto>> getUserProductsPrevious(Representative rep) {
-        List<ProductDto>productDtos = new ArrayList<ProductDto>(){{
-            addAll(pr.findByProductState(ProductState.DELIVERED).stream().map(ProductDto::fromProduct).toList());
-            addAll(pr.findByProductState(ProductState.Canceled).stream().map(ProductDto::fromProduct).toList());
-            addAll(pr.findByProductState(ProductState.Returned).stream().map(ProductDto::fromProduct).toList());
-            stream().filter(productDto -> productDto.getRecPhone().equals(rep.getPhoneNumber()));
-        }}.stream().filter(productDto -> productDto.getRepPhone().equals(rep.getPhoneNumber())).collect(Collectors.toCollection(ArrayList::new));
+    public ResponseEntity<List<ProductDto>> getUserProductsPrevious(Representative rep, String start, String end) {
+        List<ProductDto>productDtos = new ArrayList<>(new ArrayList<ProductDto>() {{
+            addAll(pr.findByProductState(ProductState.DELIVERED).stream().filter(product ->
+                            product.getDateCreated().isAfter(LocalDateTime.parse(start))
+                                    && product.getDateCreated().isBefore(LocalDateTime.parse(end)))
+                    .map(ProductDto::fromProduct).toList());
+            addAll(pr.findByProductState(ProductState.Canceled).stream().filter(product ->
+                            product.getDateCreated().isAfter(LocalDateTime.parse(start))
+                                    && product.getDateCreated().isBefore(LocalDateTime.parse(end)))
+                    .map(ProductDto::fromProduct).toList());
+            addAll(pr.findByProductState(ProductState.Returned).stream().filter(product ->
+                            product.getDateCreated().isAfter(LocalDateTime.parse(start))
+                                    && product.getDateCreated().isBefore(LocalDateTime.parse(end)))
+                    .map(ProductDto::fromProduct).toList());
+        }}).stream().filter(productDto -> productDto.getRepPhone().equals(rep.getPhoneNumber())).collect(Collectors.toCollection(ArrayList::new));
         return ResponseEntity.ok(productDtos);
     }
+
 
     @Override
     public ResponseEntity<SuccessResponse> confirmReceive(Representative rep, String id) {
@@ -243,6 +263,25 @@ public class RepresentativeServiceImpl implements RepresentativeService {
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         if (response.statusCode() == 200) {
+            if (msg.getId() == 3) {
+                Product product = pr.findById(msg.getProductId()).get();
+                if (product.getProductState() !=ProductState.WAIT){
+                    return ResponseEntity.ok(SuccessResponse.builder().msg("يجب تاكيد من قبل العميل").build());
+                }
+                product.confirmReceive();
+                pr.saveAndFlush(product);
+                return ResponseEntity.ok(SuccessResponse.builder().msg("product receive confirmed").build());
+            }else if (msg.getId() == 2){
+                Product product = pr.findById(msg.getProductId()).get();
+                product.returnProduct();
+                pr.saveAndFlush(product);
+                return ResponseEntity.ok(SuccessResponse.builder().msg("product return successfully").build());
+            }else if (msg.getId() == 4){
+                Product product = pr.findById(msg.getProductId()).get();
+                product.cancelProduct();
+                pr.saveAndFlush(product);
+                return ResponseEntity.ok(SuccessResponse.builder().msg("product canceled successfully").build());
+            }
             return ResponseEntity.ok().body(SuccessResponse.builder().msg("message sent successfully").build());
         }
 
@@ -253,7 +292,7 @@ public class RepresentativeServiceImpl implements RepresentativeService {
     private LetsBotModel generateGetLocationMessage(Representative representative, WhatsappMsg msg) {
 //        var product = pr.findById(msg.getProductId());
         return LetsBotModel.builder().phone(msg.getPhone()).body(msg.getMsg()
-                + "http://209.250.233.30:8080/location/" + msg.getProductId()).build();
+                + (msg.getId() ==0 ? "http://209.250.233.30:8080/location/" + msg.getProductId(): "")).build();
     }
 
     @Override

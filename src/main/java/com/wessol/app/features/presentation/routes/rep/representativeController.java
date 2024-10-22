@@ -54,12 +54,12 @@ public class representativeController {
     }
 
     @GetMapping("/products")
-    public ResponseEntity<List<ProductDto>> getProductsByState(@RequestParam("state") String state , Authentication authentication){
+    public ResponseEntity<List<ProductDto>> getProductsByState(@RequestParam("state") String state , @RequestParam("start") String start, @RequestParam("end") String end,  Authentication authentication){
         var rep = (Representative) authentication.getPrincipal();
         if (state.equals("current"))
-            return representativeService.getUserProductsCurrent(rep);
+            return representativeService.getUserProductsCurrent(rep, start,  end);
         else if (state.equals("previous"))
-            return representativeService.getUserProductsPrevious(rep);
+            return representativeService.getUserProductsPrevious(rep, start,  end   );
         return ResponseEntity.notFound().build();
     }
     @GetMapping("/board-state")

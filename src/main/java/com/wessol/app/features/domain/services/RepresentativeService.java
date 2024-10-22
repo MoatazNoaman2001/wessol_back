@@ -32,8 +32,8 @@ public interface RepresentativeService {
     ResponseEntity<GetProducts> getUserProducts(Representative rep);
 
     ResponseEntity<Map<ProductState, Integer>> getBoardState(Representative rep , LocalDateTime start, LocalDateTime end);
-    ResponseEntity<List<ProductDto>> getUserProductsCurrent(Representative rep);
-    ResponseEntity<List<ProductDto>> getUserProductsPrevious(Representative rep);
+    ResponseEntity<List<ProductDto>> getUserProductsCurrent(Representative rep, String start, String end);
+    ResponseEntity<List<ProductDto>> getUserProductsPrevious(Representative rep, String start, String end);
 
     ResponseEntity<SuccessResponse> confirmReceive(Representative rep, String id);
 
