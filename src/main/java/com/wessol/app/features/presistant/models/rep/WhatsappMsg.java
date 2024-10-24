@@ -18,7 +18,8 @@ public class WhatsappMsg {
     private String phone;
     @NotNull
     private String msg;
-    private int id;
+    @NotNull
+    private Integer id;
     @NotNull
     private String productId;
 }
