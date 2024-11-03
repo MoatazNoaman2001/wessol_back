@@ -14,6 +14,7 @@ public class ProductRequest {
             company,
             rec_name,
             rec_phone,
+            sen_type,
             sen_name,
             sen_phone,
             pay_type,

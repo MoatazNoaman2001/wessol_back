@@ -51,6 +51,10 @@ public class Product {
     @Column(name = "sen_phone")
     private String senderPhoneNumber;
 
+    @Column(name = "senType")
+    @Enumerated(EnumType.STRING)
+    private SendType sendType = SendType.توصيل;
+
     @ManyToOne
     @JoinColumn(name = "company_id")
     private Company company;

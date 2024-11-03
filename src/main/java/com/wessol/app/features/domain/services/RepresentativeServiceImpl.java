@@ -304,6 +304,7 @@ public class RepresentativeServiceImpl implements RepresentativeService {
 
         if (method.isPresent() && place.isPresent()) {
             Product prd = Product.builder()
+                    .sendType(Objects.equals(request.getSen_type(), SendType.توصيل.name()) ? SendType.توصيل : SendType.استلام)
                     .receiverName(request.getRec_name())
                     .receiverPhoneNumber(request.getRec_phone())
                     .senderName(request.getSen_name())

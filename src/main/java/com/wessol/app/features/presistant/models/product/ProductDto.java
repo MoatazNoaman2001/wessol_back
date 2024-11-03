@@ -31,6 +31,7 @@ public class ProductDto {
     private String senPhone;
     private String recName;
     private String recPhone;
+    private String senType;
     private String planName;
     private String state;
     private String payLocation;
@@ -57,6 +58,7 @@ public class ProductDto {
                 .senName(product.getSenderName())
                 .senPhone(product.getSenderPhoneNumber())
                 .repPhone(product.getRepresentative().getPhoneNumber())
+                .senType(product.getSendType().name())
                 .planName(product.getRepresentative().getMonthAttendancePay().getTitle())
                 .totalCost(product.getCost())
                 .state(product.getProductState().name())
