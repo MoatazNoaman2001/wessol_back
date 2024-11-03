@@ -1,10 +1,8 @@
 package com.wessol.app.features.domain.services;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wessol.app.core.Config.Constants;
 import com.wessol.app.features.presistant.entities.Role;
-import com.wessol.app.features.presistant.entities.opt.OTP;
 import com.wessol.app.features.presistant.entities.payments.Method;
 import com.wessol.app.features.presistant.entities.place.ShippingPlaceE;
 import com.wessol.app.features.presistant.entities.plan.Plan;
@@ -36,10 +34,8 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Service
@@ -296,8 +292,7 @@ public class RepresentativeServiceImpl implements RepresentativeService {
     }
 
     @Override
-    public ResponseEntity<SuccessResponse> addProduct(ProductRequest request) {
-        Representative rep = repRepo.findByPhoneNumber(request.getSen_phone()).orElseThrow(() -> new RuntimeException("cant find representative"));
+    public ResponseEntity<SuccessResponse> addProduct(ProductRequest request, Representative rep) {
         var company = cr.findByName(request.getCompany());
         if (company.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -311,6 +306,8 @@ public class RepresentativeServiceImpl implements RepresentativeService {
             Product prd = Product.builder()
                     .receiverName(request.getRec_name())
                     .receiverPhoneNumber(request.getRec_phone())
+                    .senderName(request.getSen_name())
+                    .senderPhoneNumber(request.getSen_phone())
                     .representative(rep)
                     .company(company.get())
                     .payType(method.get())

@@ -90,6 +90,42 @@ public class AuthServiceImpl implements AuthService {
 
     }
 
+    @Override
+    public SuccessResponse regenerateOTP(Representative rep) {
+        LetsBotModel letsBotModel = getLetsBootModel(rep);
+        try {
+            String requestBody = new ObjectMapper().writeValueAsString(letsBotModel);
+            repo.save(rep);
+            HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(30)).build();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create("https://letsbot.net/api/v1/message/send"))
+                    .timeout(Duration.of(30, ChronoUnit.SECONDS))
+                    .header("Content-Type", "application/json")
+                    .header("Authorization", "Bearer " + Constants.LESTBOT_TOKEN)
+                    .POST(HttpRequest.BodyPublishers.ofString(requestBody))
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() == 200) {
+                OTP otp = OTP.builder()
+                        .OTP(encoder.encode(this.otp))
+                        .representative(rep)
+                        .createdAt(
+                                LocalDateTime.ofInstant(Calendar.getInstance().toInstant(), TimeZone.getDefault().toZoneId())
+                        )
+                        .expiresAt(
+                                LocalDateTime.ofInstant(Calendar.getInstance().toInstant(), TimeZone.getDefault().toZoneId()).plusDays(30)
+                        )
+                        .build();
+                otpRepo.save(otp);
+                return SuccessResponse.builder().msg("Account created Please Verify {" + this.otp+ "}").build();
+            }
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
+
     private LetsBotModel getLetsBootModel(Representative representative) {
         otp = getVerifyCode(6);
         return LetsBotModel.builder().phone(representative.getPhoneNumber()).body(

@@ -1,11 +1,9 @@
 package com.wessol.app.features.presentation.routes.rep;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.wessol.app.features.domain.services.RepresentativeService;
 import com.wessol.app.features.presistant.entities.Role;
 import com.wessol.app.features.presistant.entities.payments.Method;
 import com.wessol.app.features.presistant.entities.place.ShippingPlaceE;
-import com.wessol.app.features.presistant.entities.products.Product;
 import com.wessol.app.features.presistant.entities.products.ProductState;
 import com.wessol.app.features.presistant.entities.representative.Representative;
 import com.wessol.app.features.presistant.entities.wallet.BankWallet;
@@ -16,7 +14,6 @@ import com.wessol.app.features.presistant.models.product.ProductDto;
 import com.wessol.app.features.presistant.models.rep.ProductRequest;
 import com.wessol.app.features.presistant.models.rep.WhatsappMsg;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.query.QueryParameter;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -72,9 +69,7 @@ public class representativeController {
     private ResponseEntity<SuccessResponse> addNewProduct(@RequestBody ProductRequest request, Authentication authentication){
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         var rep = (Representative) authentication.getPrincipal();
-        request.setSen_phone(rep.getPhoneNumber());
-        request.setSen_name(rep.getName());
-        return  representativeService.addProduct(request);
+        return  representativeService.addProduct(request,rep );
     }
 
     @GetMapping("/profile")

@@ -331,8 +331,11 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public ResponseEntity<List<RepresentativeDto>> getAllReps(String start, String end, Integer id) {
         List<RepresentativeDto> reps = rp.findAll()
-                .stream().filter(
+                .stream()
+
+                .filter(
                         representative ->
+                                representative.getMonthAttendancePay() != null &&
                                 representative.getMothAttendancePayStartDate().isAfter(LocalDateTime.parse(start))&&
                                 representative.getMothAttendancePayStartDate().isBefore(LocalDateTime.parse(end))
                 ).map(representative -> RepresentativeDto.builder()

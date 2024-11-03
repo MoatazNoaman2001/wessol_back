@@ -26,10 +26,12 @@ public class ProductDto {
     private String id;
     private String companyName;
     private String repName;
-    private String recName;
-    private String planName;
-    private String recPhone;
     private String repPhone;
+    private String senName;
+    private String senPhone;
+    private String recName;
+    private String recPhone;
+    private String planName;
     private String state;
     private String payLocation;
     private String driveType;
@@ -52,6 +54,8 @@ public class ProductDto {
                 .repName(product.getRepresentative().getName())
                 .recName(product.getReceiverName())
                 .recPhone(product.getReceiverPhoneNumber())
+                .senName(product.getSenderName())
+                .senPhone(product.getSenderPhoneNumber())
                 .repPhone(product.getRepresentative().getPhoneNumber())
                 .planName(product.getRepresentative().getMonthAttendancePay().getTitle())
                 .totalCost(product.getCost())

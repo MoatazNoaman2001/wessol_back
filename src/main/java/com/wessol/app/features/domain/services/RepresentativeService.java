@@ -39,7 +39,7 @@ public interface RepresentativeService {
 
     ResponseEntity<SuccessResponse> sendWhatsappMessage(Representative representative, WhatsappMsg msg) throws IOException, InterruptedException;
 
-    ResponseEntity<SuccessResponse> addProduct(ProductRequest request);
+    ResponseEntity<SuccessResponse> addProduct(ProductRequest request, Representative rep);
 
     ResponseEntity<Representative> getProfile(String phoneNumber);
 

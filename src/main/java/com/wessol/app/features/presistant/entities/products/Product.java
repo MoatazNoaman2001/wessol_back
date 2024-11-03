@@ -44,6 +44,13 @@ public class Product {
     @JoinColumn(name = "pay_id")
     private Method payType;
 
+    @Column(name = "sen_name")
+    private String senderName;
+
+
+    @Column(name = "sen_phone")
+    private String senderPhoneNumber;
+
     @ManyToOne
     @JoinColumn(name = "company_id")
     private Company company;
