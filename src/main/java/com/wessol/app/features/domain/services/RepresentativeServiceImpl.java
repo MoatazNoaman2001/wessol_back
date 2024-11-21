@@ -106,6 +106,14 @@ public class RepresentativeServiceImpl implements RepresentativeService {
                 .build()).toList());
     }
 
+
+    @Override
+    public ResponseEntity<Representative> editPhoneNumber(Representative representative,  String phoneNumber) {
+        representative.setPhoneNumber(phoneNumber);
+        repRepo.save(representative);
+        return ResponseEntity.ok(representative);
+    }
+
     @Override
     public ResponseEntity<SuccessResponse> updateMyImg(MultipartFile file, String phoneNumber) {
         boolean isUserExist = repRepo.findByPhoneNumber(phoneNumber).isPresent();
@@ -304,7 +312,7 @@ public class RepresentativeServiceImpl implements RepresentativeService {
 
         if (method.isPresent() && place.isPresent()) {
             Product prd = Product.builder()
-                    .sendType(Objects.equals(request.getSen_type(), SendType.توصيل.name()) ? SendType.توصيل : SendType.استلام)
+                    .sendType(Objects.equals(request.getSen_type(), SendType.استلام.name()) ? SendType.استلام : SendType.توصيل)
                     .receiverName(request.getRec_name())
                     .receiverPhoneNumber(request.getRec_phone())
                     .senderName(request.getSen_name())

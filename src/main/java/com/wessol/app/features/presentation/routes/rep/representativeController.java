@@ -72,6 +72,13 @@ public class representativeController {
         return  representativeService.addProduct(request,rep );
     }
 
+    @PatchMapping("/edit/{phoneNumber}")
+    private ResponseEntity<Representative> editPhoneNumber(@PathVariable("phoneNumber") String phone, Authentication authentication){
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+        var rep = (Representative) authentication.getPrincipal();
+        return  representativeService.editPhoneNumber(rep, phone);
+    }
+
     @GetMapping("/profile")
     private ResponseEntity<Representative> getMyProfile(@RequestPart("phone") String phoneNumber){
         return representativeService.getProfile(phoneNumber);

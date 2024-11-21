@@ -25,6 +25,8 @@ public interface RepresentativeService {
     ResponseEntity<Map> getMyPlan(String phoneNumber);
 
     ResponseEntity<List<PayRecord>> getMyWallet(Representative representative);
+
+    ResponseEntity<Representative> editPhoneNumber(Representative representative, String phoneNumber);
     ResponseEntity<SuccessResponse> updateMyImg(MultipartFile file, String phoneNumber);
     ResponseEntity<SuccessResponse> updateMyWallet(BankWallet wallet, String phoneNumber);
     ResponseEntity<SuccessResponse> getMyImg(String phoneNumber) throws FileNotFoundException;

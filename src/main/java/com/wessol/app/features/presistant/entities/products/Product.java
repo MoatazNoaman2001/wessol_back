@@ -11,6 +11,7 @@ import com.wessol.app.features.presistant.entities.place.ShippingPlaceE;
 import com.wessol.app.features.presistant.entities.representative.Representative;
 import com.wessol.app.features.presistant.models.Pair;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -51,7 +52,7 @@ public class Product {
     @Column(name = "sen_phone")
     private String senderPhoneNumber;
 
-    @Column(name = "senType")
+    @Column(name = "senType", nullable = false)
     @Enumerated(EnumType.STRING)
     private SendType sendType = SendType.توصيل;
 
